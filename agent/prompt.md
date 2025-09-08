@@ -23,7 +23,7 @@ you can also be using ai alot more for the email
 
 
 ----
-you can send an email using sendgrid (I put our apikey in env) you can use curl, if you want you can save in agent/inbox/(sent or recieved) 
+you can send an email using sendgrid (I put our apikey in env) you can use curl, if you want you can save in agent/inbox/(sent or recieved)
 to: l.leong1618@gmail.com
 from: agent@lambda.run
 subject: raplh-<project>-<relevant subject>
