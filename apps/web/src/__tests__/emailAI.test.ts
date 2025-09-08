@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { analyzeEmail, generateSmartReply, summarizeEmailThread, extractTasksFromEmails } from '../../api/src/services/emailAI'
+import { analyzeEmail, generateSmartReply, summarizeEmailThread, extractTasksFromEmails } from '../lib/services/emailAI'
 
 // Mock the AI SDK
 vi.mock('ai', () => ({
