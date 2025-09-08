@@ -3,6 +3,12 @@
 ## Vision
 Transform mail-01 into an AI-powered email client using assistant-ui, surpassing Mail-0's capabilities with intelligent features and modern architecture.
 
+### Key Differentiators from Mail-0/Zero:
+- **Superior AI Integration**: Deep assistant-ui integration with streaming, tool UI, and multi-modal support
+- **Conversational Email Management**: Natural language interface for all email operations
+- **Privacy-First with Intelligence**: Self-hosted option while maintaining powerful AI features
+- **Zero-Config Smart Features**: AI that works out-of-the-box without complex setup
+
 ## Core Architecture
 
 ### 1. Frontend (Next.js + assistant-ui)
@@ -30,41 +36,50 @@ Transform mail-01 into an AI-powered email client using assistant-ui, surpassing
 ## Key Improvements Over Mail-0
 
 1. **Superior AI Integration**
-   - Real-time AI assistant in email threads
-   - Contextual email understanding
-   - Predictive text and smart replies
+   - Real-time AI assistant with assistant-ui's Thread component
+   - Multi-modal email understanding (text, images, attachments)
+   - Context-aware suggestions using conversation history
+   - Tool UI for direct email actions from chat
 
 2. **Enhanced UX with assistant-ui**
-   - Streaming responses for AI features
-   - Beautiful, responsive chat-like interface
-   - Tool UI for email actions
+   - Streaming responses for instant feedback
+   - Beautiful, enterprise-grade chat interface
+   - Embedded tools for email operations
+   - Branching conversations for draft exploration
 
 3. **Advanced Features**
-   - Email branching (draft variations)
-   - Attachment intelligence
-   - Multi-agent workflows for complex tasks
+   - **Smart Inbox Zero**: AI-driven inbox management
+   - **Email Agents**: Autonomous email handling with rules
+   - **Voice-to-Email**: Dictate emails with AI transcription
+   - **Smart Templates**: Context-aware email templates
+   - **Relationship Intelligence**: Track communication patterns
+   - **Email Analytics Dashboard**: Insights on email habits
 
 ## Implementation Strategy
 
-### Phase 1: Core Setup
-- Set up assistant-ui components
-- Implement basic email operations
-- Create agent inbox structure
+### Phase 1: Enhanced Core Setup ✅ (In Progress)
+- Leverage existing assistant-ui components
+- Enhance email operations with AI hooks
+- Optimize agent inbox structure for AI processing
 
-### Phase 2: AI Integration
-- Integrate OpenAI/Anthropic for email AI
-- Implement smart compose and summaries
-- Add response suggestions
+### Phase 2: Deep AI Integration
+- Implement assistant-ui runtime with Vercel AI SDK
+- Create custom email tools for assistant
+- Smart compose with streaming suggestions
+- Thread summarization with context awareness
 
-### Phase 3: Advanced Features
-- Email categorization and filtering
-- Meeting and task extraction
-- Sentiment analysis
+### Phase 3: Killer Features
+- **Email Agents**: Autonomous responders with approval flow
+- **Smart Scheduling**: AI meeting coordination
+- **Email Analytics**: Communication insights dashboard
+- **Voice Interface**: Speech-to-email with AI
+- **Template Learning**: AI learns your writing style
 
-### Phase 4: Polish & Testing
-- Comprehensive testing suite
-- Performance optimization
-- Documentation
+### Phase 4: Enterprise & Scale
+- Multi-tenant architecture
+- Advanced security (E2E encryption option)
+- Performance optimization for 100K+ emails
+- Comprehensive test coverage (>80%)
 
 ## Technical Stack
 - **Frontend**: Next.js 14, TypeScript, assistant-ui, TailwindCSS

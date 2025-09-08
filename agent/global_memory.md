@@ -1,10 +1,10 @@
 # Mail-01 Global Memory
 
 ## Project Overview
-- **Name**: Mail-01 (Enhanced AI Email Client)
-- **Based On**: Mail-0/Zero architecture
-- **UI Framework**: assistant-ui for chat-like email interface
-- **Key Innovation**: Heavy AI integration for email intelligence
+- **Name**: Mail-01 (Next-Gen AI Email Client)
+- **Based On**: Mail-0/Zero enhanced with assistant-ui
+- **UI Framework**: assistant-ui for conversational email interface
+- **Key Innovation**: Deep AI integration with streaming, tools, and agents
 
 ## Environment
 - **SendGrid API**: Available in env
@@ -13,28 +13,49 @@
   - To: l.leong1618@gmail.com
   - Subject Pattern: ralph-mail01-[topic]
 
-## Key Decisions
-1. Using assistant-ui for email threads (chat-like interface)
-2. AI-first approach for all email operations
-3. Local storage in agent/inbox/ for email persistence
-4. Monorepo structure with apps/api and apps/web
+## Key Architectural Decisions
+1. **assistant-ui Thread** for email conversations (superior UX)
+2. **AI-first** approach - every action enhanced by AI
+3. **Local + Cloud** hybrid storage strategy
+4. **Monorepo** with turbo for optimal DX
+5. **Tool UI** for direct email actions from chat
+6. **Email Agents** for autonomous email handling
 
-## AI Features Priority
-1. Smart compose with context
-2. Email summarization
-3. Response suggestions
-4. Priority detection
-5. Meeting/task extraction
+## Enhanced AI Features (Beyond Mail-0)
+1. **Smart Compose**: Real-time streaming suggestions
+2. **Thread Intelligence**: Instant summaries with context
+3. **Email Agents**: Autonomous responders with rules
+4. **Voice-to-Email**: Dictation with AI enhancement
+5. **Relationship Insights**: Communication pattern analysis
+6. **Smart Templates**: Learn user's writing style
+7. **Multi-Modal**: Handle images and attachments intelligently
 
 ## Technical Constraints
-- Keep it simple (KISS principle)
-- DRY code patterns
-- Frequent git commits
-- 80% implementation, 20% testing
-- Target 40% context window usage
+- KISS principle with elegant solutions
+- DRY code patterns throughout
+- Frequent git commits (every feature)
+- 80% implementation, 20% testing ratio
+- Target 40% context window (100-140k tokens)
 
-## Current Status
-- Existing basic structure in place
-- Need to enhance with assistant-ui
-- SendGrid integration pending
-- AI features to be implemented
+## Implementation Progress
+✅ Phase 1 Setup:
+- Basic structure established
+- Initial assistant-ui integration
+- Folder organization (inbox/sent/drafts/archived)
+
+🔄 Currently Working:
+- Enhanced assistant-ui runtime setup
+- Email-specific AI tools
+- SendGrid integration
+
+⏳ Next Up:
+- Email agents system
+- Voice interface
+- Analytics dashboard
+
+## Key Innovations Over Mail-0
+1. **Zero-Config AI**: Works immediately
+2. **Conversational Control**: Natural language for everything
+3. **Streaming Everything**: Instant feedback
+4. **Privacy + Power**: Self-hosted with cloud AI
+5. **Enterprise Ready**: Scales to 100K+ emails
