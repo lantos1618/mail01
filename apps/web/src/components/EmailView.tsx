@@ -1,12 +1,35 @@
 "use client"
 
-import { Reply, ReplyAll, Forward, Archive, Trash2, Star, MoreVertical } from "lucide-react"
+import { Reply, ReplyAll, Forward, Archive, Trash2, Star, MoreVertical, Mail, Sparkles } from "lucide-react"
+import { useAssistant } from "@assistant-ui/react"
 
 interface EmailViewProps {
   emailId: string | null
+  onReply?: () => void
 }
 
-export default function EmailView({ emailId }: EmailViewProps) {
+export default function EmailView({ emailId, onReply }: EmailViewProps) {
+  const assistant = useAssistant()
+  
+  const analyzeEmail = async () => {
+    if (!emailId) return
+    
+    await assistant.append({
+      role: "user",
+      content: `Analyze this email and provide insights about its sentiment, priority, and suggested actions.`
+    })
+  }
+  
+  const generateReply = async () => {
+    if (!emailId) return
+    
+    await assistant.append({
+      role: "user",
+      content: `Generate a professional reply to this email.`
+    })
+    
+    onReply?.()
+  }
   if (!emailId) {
     return (
       <div className="h-full flex items-center justify-center text-gray-400">
@@ -78,24 +101,33 @@ export default function EmailView({ emailId }: EmailViewProps) {
 
       {/* Action Buttons */}
       <div className="border-t p-4">
-        <div className="flex gap-2">
-          <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-            <Reply className="w-4 h-4" />
-            Reply
-          </button>
-          <button className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800">
-            <ReplyAll className="w-4 h-4" />
-            Reply All
-          </button>
-          <button className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800">
-            <Forward className="w-4 h-4" />
-            Forward
+        <div className="flex gap-2 justify-between">
+          <div className="flex gap-2">
+            <button 
+              onClick={generateReply}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              <Reply className="w-4 h-4" />
+              Reply
+            </button>
+            <button className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800">
+              <ReplyAll className="w-4 h-4" />
+              Reply All
+            </button>
+            <button className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Forward className="w-4 h-4" />
+              Forward
+            </button>
+          </div>
+          <button 
+            onClick={analyzeEmail}
+            className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+          >
+            <Sparkles className="w-4 h-4" />
+            AI Analyze
           </button>
         </div>
       </div>
     </div>
   )
 }
-
-// Import Mail icon that was missing
-import { Mail } from "lucide-react"

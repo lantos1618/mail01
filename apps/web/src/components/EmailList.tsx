@@ -15,85 +15,95 @@ interface Email {
 
 interface EmailListProps {
   onSelectEmail: (id: string) => void
+  folder?: 'received' | 'sent' | 'drafts' | 'archived'
 }
 
-export default function EmailList({ onSelectEmail }: EmailListProps) {
+export default function EmailList({ onSelectEmail, folder = 'received' }: EmailListProps) {
   const [emails, setEmails] = useState<Email[]>([])
-  const [selectedFolder, setSelectedFolder] = useState("inbox")
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    // Mock data for now - will be replaced with real API calls
-    setEmails([
-      {
-        id: "1",
-        from: "GitHub",
-        subject: "Your pull request has been merged",
-        preview: "Congratulations! Your pull request #42 has been successfully merged into main...",
-        date: "2 hours ago",
-        unread: true,
-        starred: false,
-      },
-      {
-        id: "2",
-        from: "Team Lead",
-        subject: "Sprint Planning Meeting Tomorrow",
-        preview: "Hi team, just a reminder that we have our sprint planning meeting tomorrow at 10 AM...",
-        date: "5 hours ago",
-        unread: true,
-        starred: true,
-      },
-      {
-        id: "3",
-        from: "AWS",
-        subject: "Your monthly bill is ready",
-        preview: "Your AWS bill for December 2024 is now available. Total amount: $127.43...",
-        date: "1 day ago",
-        unread: false,
-        starred: false,
-      },
-    ])
-  }, [])
-
-  const folders = [
-    { id: "inbox", label: "Inbox", icon: Mail, count: 2 },
-    { id: "starred", label: "Starred", icon: Star, count: 1 },
-    { id: "sent", label: "Sent", icon: Send, count: 0 },
-    { id: "archive", label: "Archive", icon: Archive, count: 0 },
-    { id: "trash", label: "Trash", icon: Trash2, count: 0 },
-  ]
+    // Fetch emails based on current folder
+    const fetchEmails = async () => {
+      setLoading(true)
+      try {
+        // For now, use mock data - will be connected to real API
+        const mockEmails: Email[] = folder === 'sent' ? [
+          {
+            id: "s1",
+            from: "Me",
+            subject: "Project Update",
+            preview: "Hi team, here's the latest update on our project progress...",
+            date: "1 hour ago",
+            unread: false,
+            starred: false,
+          },
+        ] : folder === 'drafts' ? [
+          {
+            id: "d1",
+            from: "Draft",
+            subject: "Untitled Draft",
+            preview: "This is a draft email that hasn't been sent yet...",
+            date: "Yesterday",
+            unread: false,
+            starred: false,
+          },
+        ] : [
+          {
+            id: "1",
+            from: "GitHub",
+            subject: "Your pull request has been merged",
+            preview: "Congratulations! Your pull request #42 has been successfully merged into main...",
+            date: "2 hours ago",
+            unread: true,
+            starred: false,
+          },
+          {
+            id: "2",
+            from: "Team Lead",
+            subject: "Sprint Planning Meeting Tomorrow",
+            preview: "Hi team, just a reminder that we have our sprint planning meeting tomorrow at 10 AM...",
+            date: "5 hours ago",
+            unread: true,
+            starred: true,
+          },
+          {
+            id: "3",
+            from: "AWS",
+            subject: "Your monthly bill is ready",
+            preview: "Your AWS bill for December 2024 is now available. Total amount: $127.43...",
+            date: "1 day ago",
+            unread: false,
+            starred: false,
+          },
+        ]
+        
+        setEmails(mockEmails)
+      } catch (error) {
+        console.error('Failed to fetch emails:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchEmails()
+  }, [folder])
 
   return (
     <div className="h-full flex flex-col">
-      {/* Folders */}
-      <div className="p-4 space-y-1">
-        {folders.map((folder) => {
-          const Icon = folder.icon
-          return (
-            <button
-              key={folder.id}
-              onClick={() => setSelectedFolder(folder.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                selectedFolder === folder.id
-                  ? "bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400"
-                  : "hover:bg-gray-100 dark:hover:bg-gray-800"
-              }`}
-            >
-              <Icon className={`w-4 h-4 ${folder.color || ''}`} />
-              <span className="flex-1 text-left text-sm font-medium">{folder.label}</span>
-              {folder.count > 0 && (
-                <span className="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded-full">
-                  {folder.count}
-                </span>
-              )}
-            </button>
-          )
-        })}
-      </div>
-
-      <div className="border-t" />
 
       {/* Email List */}
       <div className="flex-1 overflow-y-auto">
+        {loading && (
+          <div className="p-4 text-center text-gray-500">
+            Loading emails...
+          </div>
+        )}
+        {!loading && emails.length === 0 && (
+          <div className="p-4 text-center text-gray-500">
+            No emails in {folder}
+          </div>
+        )}
         {emails.map((email) => (
           <button
             key={email.id}
