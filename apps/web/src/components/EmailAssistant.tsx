@@ -1,12 +1,16 @@
 "use client"
 
-import { Thread } from "@assistant-ui/react"
-import { useState } from "react"
+import { Thread, ThreadList, AssistantModal } from "@assistant-ui/react"
+import { useState, useCallback } from "react"
 import EmailList from "./EmailList"
 import EmailView from "./EmailView"
+import { Button } from "@/components/ui/button"
+import { Sparkles, Mail, Search, Calendar, CheckSquare } from "lucide-react"
 
 export default function EmailAssistant() {
   const [selectedEmail, setSelectedEmail] = useState<string | null>(null)
+  const [showAssistant, setShowAssistant] = useState(true)
+  const [aiMode, setAiMode] = useState<'chat' | 'compose' | 'analyze'>('chat')
 
   return (
     <div className="flex w-full h-full">
@@ -31,25 +35,47 @@ export default function EmailAssistant() {
             <div className="flex-1 overflow-hidden">
               <Thread 
                 welcome={{
-                  message: "Hi! I'm your email assistant. I can help you compose emails, summarize threads, search your inbox, and manage your email tasks. How can I help you today?",
+                  message: "Hi! I'm your AI email assistant powered by assistant-ui. I can help you:
+\n• 📧 Compose and reply to emails
+• 📊 Analyze email patterns and sentiment
+• 🔍 Search emails with natural language
+• 📅 Extract meetings and tasks
+• 🎯 Prioritize your inbox
+• 🤖 Automate email workflows\n\nHow can I help you today?",
                   suggestions: [
                     {
-                      prompt: "Summarize my unread emails",
-                      text: "Summarize unread"
+                      prompt: "Analyze sentiment and priority of my unread emails",
+                      text: "📊 Analyze unread"
                     },
                     {
-                      prompt: "Compose a professional email",
-                      text: "Compose email"
+                      prompt: "Draft a professional response to the selected email",
+                      text: "✍️ Draft reply"
                     },
                     {
-                      prompt: "Show important emails from this week",
-                      text: "Important this week"
+                      prompt: "Extract all action items and meetings from today's emails",
+                      text: "📅 Extract tasks"
                     },
                     {
-                      prompt: "Help me organize my inbox",
-                      text: "Organize inbox"
+                      prompt: "Show emails that need urgent response",
+                      text: "🚨 Urgent emails"
+                    },
+                    {
+                      prompt: "Summarize long email threads",
+                      text: "📝 Summarize threads"
+                    },
+                    {
+                      prompt: "Help me write a follow-up email",
+                      text: "📮 Write follow-up"
                     }
                   ]
+                }}
+                config={{
+                  runtime: {
+                    adapters: {
+                      attachments: true,
+                      feedback: true
+                    }
+                  }
                 }}
               />
             </div>

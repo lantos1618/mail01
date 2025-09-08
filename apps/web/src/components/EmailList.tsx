@@ -78,7 +78,7 @@ export default function EmailList({ onSelectEmail }: EmailListProps) {
                   : "hover:bg-gray-100 dark:hover:bg-gray-800"
               }`}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className={`w-4 h-4 ${folder.color || ''}`} />
               <span className="flex-1 text-left text-sm font-medium">{folder.label}</span>
               {folder.count > 0 && (
                 <span className="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded-full">

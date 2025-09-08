@@ -4,6 +4,31 @@ import { z } from "zod"
 import * as fs from "fs/promises"
 import * as path from "path"
 
+// Helper to ensure directory exists
+async function ensureDir(dirPath: string) {
+  await fs.mkdir(dirPath, { recursive: true })
+}
+
+// Helper to read emails from inbox
+async function readInbox(folder: 'sent' | 'received' | 'drafts' = 'received') {
+  const inboxPath = path.join(process.cwd(), ".agent", "inbox", folder)
+  await ensureDir(inboxPath)
+  try {
+    const files = await fs.readdir(inboxPath)
+    const emails = await Promise.all(
+      files
+        .filter(f => f.endsWith('.json'))
+        .map(async f => {
+          const content = await fs.readFile(path.join(inboxPath, f), 'utf-8')
+          return JSON.parse(content)
+        })
+    )
+    return emails
+  } catch {
+    return []
+  }
+}
+
 // Email tools for the assistant
 const emailTools = {
   searchEmails: tool({
@@ -74,6 +99,89 @@ const emailTools = {
           "Marketing campaign ready",
           "Technical issues resolved",
         ],
+        sentiment: "positive",
+        urgency: "medium",
+        actionItems: [
+          "Review final marketing materials",
+          "Confirm server capacity"
+        ]
+      }
+    },
+  }),
+
+  analyzeEmailSentiment: tool({
+    description: "Analyze the sentiment and tone of an email",
+    parameters: z.object({
+      emailContent: z.string().describe("Email content to analyze"),
+    }),
+    execute: async ({ emailContent }) => {
+      // Mock sentiment analysis
+      return {
+        sentiment: "professional",
+        tone: "friendly",
+        urgency: "normal",
+        emotions: ["confident", "helpful"],
+        suggestedResponse: "professional-acknowledgment"
+      }
+    },
+  }),
+
+  extractTasks: tool({
+    description: "Extract action items and tasks from emails",
+    parameters: z.object({
+      timeRange: z.string().optional().describe("Time range (today, this-week, all)"),
+    }),
+    execute: async ({ timeRange = "today" }) => {
+      // Mock task extraction
+      return {
+        tasks: [
+          {
+            task: "Review Q4 budget proposal",
+            from: "finance@company.com",
+            dueDate: "2024-12-25",
+            priority: "high"
+          },
+          {
+            task: "Send project status update",
+            from: "manager@company.com",
+            dueDate: "2024-12-22",
+            priority: "medium"
+          }
+        ],
+        meetings: [
+          {
+            title: "Team sync",
+            date: "2024-12-21",
+            time: "2:00 PM",
+            attendees: ["team@company.com"]
+          }
+        ]
+      }
+    },
+  }),
+
+  smartReply: tool({
+    description: "Generate smart reply suggestions",
+    parameters: z.object({
+      emailId: z.string().describe("Email ID to reply to"),
+      tone: z.string().optional().describe("Desired tone (formal, casual, friendly)"),
+    }),
+    execute: async ({ emailId, tone = "professional" }) => {
+      return {
+        suggestions: [
+          {
+            type: "acknowledge",
+            text: "Thank you for your email. I've reviewed the information and will get back to you shortly."
+          },
+          {
+            type: "accept",
+            text: "I appreciate your proposal and would be happy to move forward with the discussed plan."
+          },
+          {
+            type: "schedule",
+            text: "I'd be glad to discuss this further. Would you be available for a call next week?"
+          }
+        ]
       }
     },
   }),
@@ -97,17 +205,28 @@ export async function POST(req: Request) {
     model: openai("gpt-4o-mini"),
     messages,
     tools: emailTools,
-    system: `You are an intelligent email assistant. You help users manage their emails efficiently.
+    system: `You are Mail-01, an advanced AI email assistant powered by assistant-ui. You help users manage their emails with intelligence and efficiency.
     
-    You can:
-    - Search and filter emails
-    - Compose and send emails
-    - Summarize email threads
-    - Categorize and organize emails
-    - Provide insights about email patterns
-    - Help with email productivity
+    Your capabilities:
+    - 🔍 Natural language email search and filtering
+    - ✍️ Smart email composition with context awareness
+    - 📊 Email sentiment and priority analysis
+    - 📝 Thread summarization with key insights
+    - 📅 Meeting and task extraction from emails
+    - 🎯 Intelligent categorization and organization
+    - 🤖 Proactive email management suggestions
+    - 📨 Smart reply generation
+    - 📊 Pattern analysis and productivity insights
     
-    Be concise, helpful, and proactive in suggesting ways to manage emails better.`,
+    Guidelines:
+    - Be concise and actionable
+    - Proactively suggest improvements
+    - Learn from user preferences
+    - Prioritize privacy and security
+    - Use natural, conversational language
+    - Provide clear reasoning for suggestions
+    
+    Remember: You're not just managing emails, you're enhancing communication productivity.`,
   })
 
   return result.toDataStreamResponse()
