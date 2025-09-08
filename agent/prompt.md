@@ -13,6 +13,12 @@ https://github.com/Mail-0/Zero
 
 we also want to call this mail-01
 
+you can be completely opinionated anywhere if you think you can do this much much better
+
+maybe analyse the mail-0 then make it better
+
+you can also be using ai alot more for the email
+
 
 
 
