@@ -168,3 +168,157 @@ Return as JSON with:
     }
   }
 }
+
+export async function generateEmailFromBulletPoints(
+  points: string[],
+  recipient: string,
+  context?: string,
+  tone: 'formal' | 'casual' | 'friendly' | 'professional' = 'professional'
+): Promise<EmailDraft> {
+  try {
+    const { text } = await generateText({
+      model: openai('gpt-4o'),
+      prompt: `Create a complete email from these bullet points:
+      
+Recipient: ${recipient}
+Tone: ${tone}
+${context ? `Context: ${context}` : ''}
+
+Key points to cover:
+${points.map((p, i) => `${i + 1}. ${p}`).join('\n')}
+
+Create a natural, flowing email that:
+- Incorporates all points seamlessly
+- Uses appropriate greeting and closing
+- Maintains consistent ${tone} tone
+- Is concise but complete
+
+Return as JSON with:
+- subject: Compelling subject line
+- body: Complete email body
+- suggestions: Alternative phrasings`,
+      system: "You are an expert email writer who creates clear, engaging emails from bullet points."
+    })
+    
+    return JSON.parse(text)
+  } catch (error) {
+    console.error('Email generation from bullets failed:', error)
+    return {
+      subject: 'Important Message',
+      body: points.join('\n\n'),
+      tone: 'professional'
+    }
+  }
+}
+
+export async function detectEmailIntent(
+  content: string
+): Promise<{
+  primaryIntent: string
+  subIntents: string[]
+  requiredActions: string[]
+  urgency: 'immediate' | 'today' | 'this_week' | 'no_rush'
+  emotionalTone: string
+}> {
+  try {
+    const { text } = await generateText({
+      model: openai('gpt-4o-mini'),
+      prompt: `Analyze the intent and urgency of this email:
+      
+${content}
+
+Determine:
+1. Primary intent (request, information, complaint, etc.)
+2. Sub-intents if any
+3. Required actions from recipient
+4. Urgency level
+5. Emotional tone of sender
+
+Return as structured JSON.`,
+      system: "You are an expert at understanding email communication intent and urgency."
+    })
+    
+    return JSON.parse(text)
+  } catch (error) {
+    console.error('Intent detection failed:', error)
+    return {
+      primaryIntent: 'general',
+      subIntents: [],
+      requiredActions: [],
+      urgency: 'no_rush',
+      emotionalTone: 'neutral'
+    }
+  }
+}
+
+export async function suggestEmailTemplates(
+  scenario: string,
+  previousEmails?: any[]
+): Promise<{
+  templates: Array<{
+    name: string
+    subject: string
+    body: string
+    useCase: string
+  }>
+}> {
+  try {
+    const { text } = await generateText({
+      model: openai('gpt-4o-mini'),
+      prompt: `Generate email templates for this scenario: ${scenario}
+      
+${previousEmails ? `Based on these previous emails:\n${JSON.stringify(previousEmails.slice(0, 3))}` : ''}
+
+Create 3-4 reusable templates with:
+- Template name
+- Subject line template
+- Body template with [placeholders]
+- Use case description
+
+Return as JSON.`,
+      system: "You are an expert at creating reusable, professional email templates."
+    })
+    
+    return JSON.parse(text)
+  } catch (error) {
+    console.error('Template suggestion failed:', error)
+    return { templates: [] }
+  }
+}
+
+export async function improveEmailDraft(
+  draft: string,
+  improvements: ('clarity' | 'tone' | 'grammar' | 'conciseness' | 'persuasiveness')[]
+): Promise<{
+  improved: string
+  changes: string[]
+  suggestions: string[]
+}> {
+  try {
+    const { text } = await generateText({
+      model: openai('gpt-4o'),
+      prompt: `Improve this email draft:
+      
+${draft}
+
+Focus on improving: ${improvements.join(', ')}
+
+Provide:
+1. Improved version
+2. List of changes made
+3. Additional suggestions
+
+Return as JSON.`,
+      system: "You are an expert email editor focused on clarity and effectiveness."
+    })
+    
+    return JSON.parse(text)
+  } catch (error) {
+    console.error('Email improvement failed:', error)
+    return {
+      improved: draft,
+      changes: [],
+      suggestions: []
+    }
+  }
+}
