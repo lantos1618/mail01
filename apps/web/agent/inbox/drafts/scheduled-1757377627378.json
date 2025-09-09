@@ -1,0 +1,9 @@
+{
+  "to": "test@example.com",
+  "subject": "Scheduled email",
+  "text": "This will be sent later",
+  "sendAt": "2025-09-09T01:27:07.378Z",
+  "id": "scheduled-1757377627378",
+  "scheduledFor": "2025-09-09T01:27:07.378Z",
+  "status": "scheduled"
+}
