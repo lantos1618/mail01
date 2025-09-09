@@ -1,9 +1,9 @@
-import EmailAssistantEnhanced from "@/components/EmailAssistantEnhanced"
+import MailOneUltimate from "@/components/MailOneUltimate"
 
 export default function Home() {
   return (
     <main className="flex h-screen">
-      <EmailAssistantEnhanced />
+      <MailOneUltimate />
     </main>
   )
 }
