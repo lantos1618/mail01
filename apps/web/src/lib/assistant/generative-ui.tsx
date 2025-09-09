@@ -1,6 +1,7 @@
 "use client"
 
-import { GenerativeUI, useGenerativeUI, makeGenerativeComponent } from "@assistant-ui/react"
+// GenerativeUI components have been removed or deprecated in v0.11.0
+// import { GenerativeUI, useGenerativeUI, makeGenerativeComponent } from "@assistant-ui/react"
 import { z } from "zod"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -33,10 +34,8 @@ const EmailDashboardSchema = z.object({
   }))
 })
 
-export const EmailDashboard = makeGenerativeComponent<z.infer<typeof EmailDashboardSchema>>({
-  name: "EmailDashboard",
-  schema: EmailDashboardSchema,
-  render: ({ data }) => {
+// Converted to regular React component - makeGenerativeComponent deprecated
+export const EmailDashboard = ({ data }: { data: z.infer<typeof EmailDashboardSchema> }) => {
     const [selectedMetric, setSelectedMetric] = useState<string>("overview")
     
     return (
@@ -139,8 +138,7 @@ export const EmailDashboard = makeGenerativeComponent<z.infer<typeof EmailDashbo
         </Card>
       </div>
     )
-  }
-})
+}
 
 // Dynamic Email Workflow Builder
 const WorkflowSchema = z.object({
@@ -156,10 +154,7 @@ const WorkflowSchema = z.object({
   enabled: z.boolean()
 })
 
-export const EmailWorkflow = makeGenerativeComponent<z.infer<typeof WorkflowSchema>>({
-  name: "EmailWorkflow",
-  schema: WorkflowSchema,
-  render: ({ data, onUpdate }) => {
+export const EmailWorkflow = ({ data, onUpdate }: { data: z.infer<typeof WorkflowSchema>; onUpdate?: (data: z.infer<typeof WorkflowSchema>) => void }) => {
     const [isEditing, setIsEditing] = useState(false)
     
     return (
@@ -230,8 +225,7 @@ export const EmailWorkflow = makeGenerativeComponent<z.infer<typeof WorkflowSche
         )}
       </Card>
     )
-  }
-})
+}
 
 // Dynamic Priority Inbox
 const PriorityInboxSchema = z.object({
@@ -250,10 +244,7 @@ const PriorityInboxSchema = z.object({
   }))
 })
 
-export const PriorityInbox = makeGenerativeComponent<z.infer<typeof PriorityInboxSchema>>({
-  name: "PriorityInbox",
-  schema: PriorityInboxSchema,
-  render: ({ data }) => {
+export const PriorityInbox = ({ data }: { data: z.infer<typeof PriorityInboxSchema> }) => {
     const [selectedCategory, setSelectedCategory] = useState(0)
     
     return (
@@ -316,8 +307,7 @@ export const PriorityInbox = makeGenerativeComponent<z.infer<typeof PriorityInbo
         </div>
       </div>
     )
-  }
-})
+}
 
 // Compose all generative UI components
 export const emailGenerativeComponents = [
@@ -326,13 +316,20 @@ export const emailGenerativeComponents = [
   PriorityInbox
 ]
 
-// Hook for using generative UI in email context
+// Hook for using generative UI in email context - simplified due to deprecation
 export function useEmailGenerativeUI() {
-  return useGenerativeUI({
+  // useGenerativeUI has been deprecated in v0.11.0
+  // return useGenerativeUI({
+  //   components: emailGenerativeComponents,
+  //   onGenerate: async (component, props) => {
+  //     // Add any custom generation logic here
+  //     console.log(`Generating ${component} with props:`, props)
+  //   }
+  // })
+  return {
     components: emailGenerativeComponents,
-    onGenerate: async (component, props) => {
-      // Add any custom generation logic here
+    onGenerate: async (component: string, props: any) => {
       console.log(`Generating ${component} with props:`, props)
     }
-  })
+  }
 }

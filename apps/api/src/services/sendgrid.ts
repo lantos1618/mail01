@@ -192,7 +192,7 @@ export async function sendEmail(options: EmailOptions & {
       ...msg,
       folder: "drafts",
       timestamp: new Date().toISOString(),
-      error: error.message,
+      error: error instanceof Error ? error.message : String(error),
       priority,
       labels,
       threadId

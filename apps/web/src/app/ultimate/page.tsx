@@ -175,7 +175,7 @@ export default function UltimateMailPage() {
                 </TabsContent>
                 
                 <TabsContent value="analytics" className="min-h-[600px] p-6">
-                  <EmailAnalytics />
+                  <EmailAnalytics emails={[]} />
                 </TabsContent>
               </Tabs>
             </Card>

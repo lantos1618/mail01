@@ -1,6 +1,6 @@
 "use client"
 
-import { Thread, ThreadList, AssistantModal, Composer } from "@assistant-ui/react"
+import { Thread, ThreadList, AssistantModal, Composer } from "@assistant-ui/react-ui"
 import { useState, useCallback } from "react"
 import EmailList from "./EmailList"
 import EmailView from "./EmailView"
@@ -106,13 +106,7 @@ export default function EmailAssistant() {
             <div className="flex-1 overflow-hidden">
               <Thread 
                 welcome={{
-                  message: "Hi! I'm your AI email assistant powered by assistant-ui. I can help you:
-\n• 📧 Compose and reply to emails
-• 📊 Analyze email patterns and sentiment
-• 🔍 Search emails with natural language
-• 📅 Extract meetings and tasks
-• 🎯 Prioritize your inbox
-• 🤖 Automate email workflows\n\nHow can I help you today?",
+                  message: "Hi! I'm your AI email assistant powered by assistant-ui. I can help you:\n\n• 📧 Compose and reply to emails\n• 📊 Analyze email patterns and sentiment\n• 🔍 Search emails with natural language\n• 📅 Extract meetings and tasks\n• 🎯 Prioritize your inbox\n• 🤖 Automate email workflows\n\nHow can I help you today?",
                   suggestions: [
                     {
                       prompt: "Analyze sentiment and priority of my unread emails",
@@ -139,14 +133,6 @@ export default function EmailAssistant() {
                       text: "📮 Write follow-up"
                     }
                   ]
-                }}
-                config={{
-                  runtime: {
-                    adapters: {
-                      attachments: true,
-                      feedback: true
-                    }
-                  }
                 }}
               />
             </div>

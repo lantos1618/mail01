@@ -1,6 +1,7 @@
 "use client"
 
-import { Thread, Composer, AssistantModal, BranchPicker, ThreadMessages, ThreadSuggestion } from "@assistant-ui/react"
+import { Thread, Composer, AssistantModal, BranchPicker } from "@assistant-ui/react-ui"
+// ThreadMessages, ThreadSuggestion are not available in @assistant-ui/react-ui v0.11.0
 import { useState, useCallback } from "react"
 import EmailList from "./EmailList"
 import EmailView from "./EmailView"
@@ -309,37 +310,15 @@ How can I transform your email experience today?`,
                           <div className="prose prose-sm dark:prose-invert max-w-none">
                             {text}
                           </div>
-                        ),
-                        ToolUI: ({ tool, args, result }) => (
-                          <div className="p-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Zap className="w-4 h-4 text-blue-600" />
-                              <span className="text-sm font-medium">{tool}</span>
-                            </div>
-                            {result && (
-                              <div className="text-sm text-gray-600 dark:text-gray-400">
-                                {JSON.stringify(result, null, 2)}
-                              </div>
-                            )}
-                          </div>
-                        ),
+                        )
                       }
                     }}
-                  >
-                    <ThreadMessages />
-                    <div className="flex gap-2 p-4 border-t">
-                      <BranchPicker />
-                      <Composer 
-                        placeholder={
-                          assistantMode === 'compose' 
-                            ? "Describe the email you want to write..."
-                            : assistantMode === 'agent'
-                            ? "Set up an email automation rule..."
-                            : "Ask me anything about your emails..."
-                        }
-                      />
-                    </div>
-                  </Thread>
+                  />
+                  {/* ThreadMessages not available in v0.11.0 - messages are rendered within Thread */}
+                  {/* Composer is included within Thread in v0.11.0 */}
+                  <div className="flex gap-2 p-4 border-t">
+                    <BranchPicker />
+                  </div>
                 </div>
               </div>
             </div>

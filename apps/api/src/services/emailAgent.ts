@@ -149,7 +149,11 @@ Generate a polite, professional auto-reply.`,
   private async learnFromEmail(email: any, analysis: any) {
     // Store patterns for future use
     const patternsPath = path.join(process.cwd(), '.agent', 'patterns.json')
-    let patterns = {}
+    let patterns: Record<string, {
+      typicalSentiment: string[]
+      typicalPriority: string[]
+      typicalCategories: string[]
+    }> = {}
     
     try {
       const content = await fs.readFile(patternsPath, 'utf-8')

@@ -3,8 +3,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import {
   AssistantRuntimeProvider,
-  Thread,
-  Composer,
   useLocalRuntime,
   useAssistantTool,
   useAssistantContext,
@@ -14,6 +12,7 @@ import {
   BranchPickerPrimitive,
   ActionBarPrimitive
 } from '@assistant-ui/react'
+import { Thread, Composer } from '@assistant-ui/react-ui'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'

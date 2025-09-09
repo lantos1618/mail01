@@ -1,6 +1,6 @@
 "use client"
 
-import { ToolUI, makeToolUI } from "@assistant-ui/react"
+import { makeAssistantToolUI } from "@assistant-ui/react"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -22,7 +22,7 @@ const SendEmailSchema = z.object({
   schedule: z.string().optional()
 })
 
-export const SendEmailToolUI = makeToolUI<z.infer<typeof SendEmailSchema>>({
+export const SendEmailToolUI = makeAssistantToolUI<z.infer<typeof SendEmailSchema>>({
   name: "send_email",
   description: "Send an email with AI enhancement",
   parameters: SendEmailSchema,
@@ -103,7 +103,7 @@ const SearchEmailsSchema = z.object({
   }).optional()
 })
 
-export const SearchEmailsToolUI = makeToolUI<z.infer<typeof SearchEmailsSchema>>({
+export const SearchEmailsToolUI = makeAssistantToolUI<z.infer<typeof SearchEmailsSchema>>({
   name: "search_emails",
   description: "Search emails with natural language",
   parameters: SearchEmailsSchema,
@@ -157,7 +157,7 @@ const CategorizeEmailSchema = z.object({
   suggestedCategories: z.array(z.string())
 })
 
-export const CategorizeEmailToolUI = makeToolUI<z.infer<typeof CategorizeEmailSchema>>({
+export const CategorizeEmailToolUI = makeAssistantToolUI<z.infer<typeof CategorizeEmailSchema>>({
   name: "categorize_email",
   description: "AI-powered email categorization",
   parameters: CategorizeEmailSchema,
@@ -205,7 +205,7 @@ const SummarizeThreadSchema = z.object({
   style: z.enum(["brief", "detailed", "action-items"]).optional()
 })
 
-export const SummarizeThreadToolUI = makeToolUI<z.infer<typeof SummarizeThreadSchema>>({
+export const SummarizeThreadToolUI = makeAssistantToolUI<z.infer<typeof SummarizeThreadSchema>>({
   name: "summarize_thread",
   description: "Generate AI summary of email thread",
   parameters: SummarizeThreadSchema,
@@ -252,7 +252,7 @@ export const SummarizeThreadToolUI = makeToolUI<z.infer<typeof SummarizeThreadSc
 })
 
 // Compose all tool UIs
-export const emailToolUIs: ToolUI[] = [
+export const emailToolUIs = [
   SendEmailToolUI,
   SearchEmailsToolUI,
   CategorizeEmailToolUI,

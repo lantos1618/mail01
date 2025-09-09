@@ -1,8 +1,7 @@
 "use client"
 
 import { AssistantRuntimeProvider, makeAssistantTool, makeAssistantToolUI } from "@assistant-ui/react"
-import { useVercelUseChatRuntime } from "@assistant-ui/react-ai-sdk"
-import { useChat } from "ai/react"
+import { useChatRuntime } from "@assistant-ui/react-ai-sdk"
 import { ReactNode, useState, useCallback } from "react"
 import { z } from "zod"
 import { Mail, Send, Search, Calendar, Bot, Brain, FileText, Users, Zap, Sparkles } from "lucide-react"
@@ -267,7 +266,7 @@ export function RevolutionaryAssistantProvider({ children }: { children: ReactNo
   const [tools] = useState(() => Object.values(emailTools))
   const [toolUIs] = useState(() => Object.values(ToolUIComponents))
 
-  const chat = useChat({
+  const runtime = useChatRuntime({
     api: "/api/assistant",
     initialMessages: [
       {
@@ -292,8 +291,6 @@ export function RevolutionaryAssistantProvider({ children }: { children: ReactNo
       })),
     },
   })
-
-  const runtime = useVercelUseChatRuntime(chat)
 
   // Enhance runtime with custom capabilities
   const enhancedRuntime = {

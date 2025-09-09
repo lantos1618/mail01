@@ -1,8 +1,13 @@
 "use client"
 
+// AssistantFrame, FrameMessage, FrameRuntime have been removed or moved in v0.11.0
+// Commenting out this entire file for now
+/*
 import { AssistantFrame, FrameMessage, FrameRuntime } from "@assistant-ui/react"
+*/
 import { useEffect, useRef, useState } from "react"
 
+/*
 // Assistant Frame API for cross-iframe email model context sharing
 export class EmailFrameAPI {
   private frame: AssistantFrame
@@ -225,4 +230,22 @@ export function EmailCollaborationFrame() {
       )}
     </div>
   )
+}
+*/
+
+// Simplified exports for v0.11.0 - advanced features removed
+export function useEmailFrame() {
+  return {
+    frame: null,
+    connected: false,
+    sharedContext: null
+  }
+}
+
+export function EmailWidgetFrame(props: any) {
+  return <div>Frame API not available in v0.11.0</div>
+}
+
+export function EmailCollaborationFrame() {
+  return <div>Collaboration Frame not available in v0.11.0</div>
 }

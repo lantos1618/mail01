@@ -1,7 +1,7 @@
 "use client"
 
 import { Reply, ReplyAll, Forward, Archive, Trash2, Star, MoreVertical, Mail, Sparkles, Clock, AlertCircle, Calendar, Users, FileText, CheckCircle } from "lucide-react"
-import { useAssistant } from "@assistant-ui/react"
+import { useAssistantRuntime } from "@assistant-ui/react"
 import { useState, useEffect } from "react"
 import { getMockEmailById } from "@/lib/email/mock-data"
 import { emailIntelligence, EmailMessage, EmailAnalysis } from "@/lib/ai/email-intelligence"

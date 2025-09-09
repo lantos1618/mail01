@@ -99,7 +99,7 @@ export default function EmailList({ onSelectEmail, folder = 'received' }: EmailL
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     {analysis && (
-                      <span className="text-lg">{categoryIcons[analysis.category]}</span>
+                      <span className="text-lg">{categoryIcons[analysis.category as keyof typeof categoryIcons]}</span>
                     )}
                     <span className={`text-sm truncate ${!email.isRead ? "font-semibold text-gray-900 dark:text-gray-100" : "text-gray-600 dark:text-gray-400"}`}>
                       {email.from.split('@')[0]}
@@ -126,7 +126,7 @@ export default function EmailList({ onSelectEmail, folder = 'received' }: EmailL
                     <div className="flex items-center gap-2 mt-2">
                       <Badge 
                         variant="secondary" 
-                        className={`text-xs px-1.5 py-0 h-5 ${priorityColors[analysis.priority]}`}
+                        className={`text-xs px-1.5 py-0 h-5 ${priorityColors[analysis.priority as keyof typeof priorityColors]}`}
                       >
                         {analysis.priority}
                       </Badge>

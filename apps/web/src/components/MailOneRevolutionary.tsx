@@ -1,6 +1,7 @@
 "use client"
 
-import { Thread, Composer, AssistantModal, ThreadMessages, BranchPicker, ThreadSuggestion } from "@assistant-ui/react"
+import { Thread, Composer, AssistantModal, BranchPicker } from "@assistant-ui/react-ui"
+// ThreadMessages, ThreadSuggestion are not available in @assistant-ui/react-ui v0.11.0
 import { useState, useCallback, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -159,23 +160,31 @@ function ConversationalEmail() {
       {/* Main Thread */}
       <div className="flex-1 overflow-hidden">
         <Thread>
-          <ThreadMessages />
+          {/* ThreadMessages not available in v0.11.0 */}
+          {/* ThreadSuggestion not available in v0.11.0
           <ThreadSuggestion
             prompt="Show me urgent emails from this week"
             method="replace"
           />
+          */}
+          {/* ThreadSuggestion not available in v0.11.0
           <ThreadSuggestion
             prompt="Draft a response to the budget review email"
             method="replace"
           />
+          */}
+          {/* ThreadSuggestion not available in v0.11.0
           <ThreadSuggestion
             prompt="Summarize all meeting requests"
             method="replace"
           />
+          */}
+          {/* ThreadSuggestion not available in v0.11.0
           <ThreadSuggestion
             prompt="What's my email productivity score?"
             method="replace"
           />
+          */}
         </Thread>
       </div>
 
