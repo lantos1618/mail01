@@ -1,14 +1,9 @@
-import { promises as fs } from 'fs'
-import path from 'path'
-
-// Enhanced SendGrid service with file storage
+// Enhanced SendGrid service with localStorage
 export class SendGridEnhanced {
   private apiKey: string
-  private inboxPath: string
   
   constructor() {
-    this.apiKey = process.env.SENDGRID_API_KEY || ''
-    this.inboxPath = path.join(process.cwd(), 'agent', 'inbox')
+    this.apiKey = process.env.NEXT_PUBLIC_SENDGRID_API_KEY || process.env.SENDGRID_API_KEY || ''
   }
 
   async sendEmail(email: {
@@ -23,13 +18,18 @@ export class SendGridEnhanced {
     attachments?: any[]
   }): Promise<{ success: boolean; messageId?: string; error?: string }> {
     try {
-      // Save to local storage first
-      await this.saveEmail({
-        ...email,
-        folder: 'sent',
-        timestamp: new Date().toISOString(),
-        messageId: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-      })
+      // Save to localStorage in browser
+      if (typeof window !== 'undefined') {
+        const emailData = {
+          ...email,
+          folder: 'sent',
+          timestamp: new Date().toISOString(),
+          messageId: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        }
+        const emails = JSON.parse(localStorage.getItem('mail01-emails') || '[]')
+        emails.push(emailData)
+        localStorage.setItem('mail01-emails', JSON.stringify(emails))
+      }
 
       // If no API key, just save locally
       if (!this.apiKey) {
@@ -77,38 +77,34 @@ export class SendGridEnhanced {
   }
 
   async saveEmail(email: any): Promise<void> {
+    if (typeof window === 'undefined') return
+    
     const folder = email.folder || 'sent'
-    const folderPath = path.join(this.inboxPath, folder)
+    const storageKey = `mail01-${folder}`
     
-    // Ensure folder exists
-    await fs.mkdir(folderPath, { recursive: true })
+    // Get existing emails
+    const emails = JSON.parse(localStorage.getItem(storageKey) || '[]')
     
-    // Generate filename
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
-    const filename = `${timestamp}_${email.subject?.replace(/[^a-z0-9]/gi, '_') || 'email'}.json`
+    // Add new email
+    emails.push({
+      ...email,
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      timestamp: email.timestamp || new Date().toISOString()
+    })
     
-    // Save email
-    await fs.writeFile(
-      path.join(folderPath, filename),
-      JSON.stringify(email, null, 2)
-    )
+    // Save back to localStorage
+    localStorage.setItem(storageKey, JSON.stringify(emails))
   }
 
   async getEmails(folder: string = 'inbox'): Promise<any[]> {
-    const folderPath = path.join(this.inboxPath, folder)
+    if (typeof window === 'undefined') return []
+    
+    const storageKey = `mail01-${folder}`
     
     try {
-      const files = await fs.readdir(folderPath)
-      const emails = []
+      const emails = JSON.parse(localStorage.getItem(storageKey) || '[]')
       
-      for (const file of files) {
-        if (file.endsWith('.json')) {
-          const content = await fs.readFile(path.join(folderPath, file), 'utf-8')
-          emails.push(JSON.parse(content))
-        }
-      }
-      
-      return emails.sort((a, b) => 
+      return emails.sort((a: any, b: any) => 
         new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
       )
     } catch (error) {

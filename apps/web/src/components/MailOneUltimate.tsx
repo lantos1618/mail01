@@ -3,13 +3,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
   AssistantRuntimeProvider,
-  Thread,
-  Composer,
-  AssistantMessage,
-  UserMessage,
+  useLocalRuntime,
   useAssistantTool
 } from '@assistant-ui/react'
-import { useLocalRuntime } from '@assistant-ui/react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -206,7 +202,7 @@ export default function MailOneUltimate() {
     recognition.start()
   }, [handleSwarmProcess])
 
-  const runtime = useLocalRuntime({
+  const assistantRuntime = useLocalRuntime({
     initialMessages: [
       {
         role: 'assistant',
@@ -216,7 +212,7 @@ export default function MailOneUltimate() {
   })
 
   return (
-    <AssistantRuntimeProvider runtime={runtime}>
+    <AssistantRuntimeProvider runtime={assistantRuntime}>
       <div className="flex h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         {/* Sidebar */}
         <div className="w-80 border-r bg-white dark:bg-gray-900 flex flex-col">

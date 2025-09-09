@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { EnhancedAssistantProvider } from "@/lib/assistant/runtime-enhanced"
-import EmailStreamingAssistant, { EnhancedStreamingAssistant } from "@/components/EmailStreamingAssistant"
+import EmailStreamingAssistant from "@/components/EmailStreamingAssistant"
 import EmailAssistantEnhanced from "@/components/EmailAssistantEnhanced"
 import VoiceEmailComposer from "@/components/VoiceEmailComposer"
 import CollaborativeEmailComposer from "@/components/CollaborativeEmailComposer"

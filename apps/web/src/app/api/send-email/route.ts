@@ -6,6 +6,7 @@ const SendEmailSchema = z.object({
   to: z.string().email(),
   from: z.string().email().default('agent@lambda.run'),
   subject: z.string(),
+  content: z.string().optional(),
   text: z.string().optional(),
   html: z.string().optional(),
   cc: z.array(z.string().email()).optional(),
@@ -16,6 +17,11 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const validated = SendEmailSchema.parse(body)
+    
+    // If content is provided but not text, use content as text
+    if (validated.content && !validated.text) {
+      validated.text = validated.content
+    }
     
     // Use SendGrid to send the email
     const result = await sendgrid.sendEmail(validated)
