@@ -1,6 +1,17 @@
 "use client"
 
-import { Thread, Composer, ThreadMessages, AssistantMessage, UserMessage } from "@assistant-ui/react"
+import { 
+  Thread, 
+  Composer, 
+  ThreadMessages, 
+  AssistantMessage, 
+  UserMessage,
+  ThreadWelcome,
+  BranchPicker,
+  ThreadSuggestion,
+  useAssistant,
+  useThread
+} from "@assistant-ui/react"
 import { useState, useEffect, useCallback, useRef } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -10,8 +21,13 @@ import {
   TrendingUp, AlertCircle, CheckCircle2, Clock,
   Mail, Send, Archive, Star, Reply, Forward,
   FileText, Image, Paperclip, Mic, Video,
-  Shield, Lock, Eye, EyeOff, Bot, Users
+  Shield, Lock, Eye, EyeOff, Bot, Users,
+  BarChart3, Calendar, Trash
 } from "lucide-react"
+import { emailToolUIs } from "@/lib/assistant/tool-ui"
+import { useEmailFrame } from "@/lib/assistant/frame-api"
+import { EmailDashboard, EmailWorkflow, PriorityInbox } from "@/lib/assistant/generative-ui"
+import { useEmailThreadList, useSyncStatus } from "@/lib/assistant/cloud-persistence"
 
 interface EmailStream {
   id: string
@@ -349,6 +365,105 @@ function MultiModalComposer() {
   )
 }
 
+// Helper component for streaming content
+function EmailStreamingContent({ mode, setMode, suggestions }: any) {
+  return (
+    <div className="p-4">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="font-semibold">Email Stream</h2>
+        <div className="flex gap-2">
+          <Button
+            variant={mode === "stream" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setMode("stream")}
+          >
+            Stream
+          </Button>
+          <Button
+            variant={mode === "compose" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setMode("compose")}
+          >
+            Compose
+          </Button>
+          <Button
+            variant={mode === "analyze" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setMode("analyze")}
+          >
+            Analyze
+          </Button>
+        </div>
+      </div>
+      <div className="space-y-4">
+        {/* Content based on mode */}
+      </div>
+    </div>
+  )
+}
+
+// Enhanced Streaming Assistant with Cloud Persistence
+function EnhancedStreamingAssistant() {
+  const assistant = useAssistant()
+  const thread = useThread()
+  const { frame, connected } = useEmailFrame()
+  const syncStatus = useSyncStatus()
+  const threadList = useEmailThreadList()
+  
+  const [mode, setMode] = useState<"stream" | "compose" | "analyze">("stream")
+  
+  // AI-powered suggestions
+  const suggestions = [
+    { text: "Summarize unread emails", icon: FileText },
+    { text: "Show priority inbox", icon: AlertCircle },
+    { text: "Draft responses", icon: Reply },
+    { text: "Analyze patterns", icon: BarChart3 }
+  ]
+  
+  return (
+    <div className="flex h-full">
+      {/* Enhanced Thread Sidebar */}
+      <div className="w-80 border-r bg-white/50 dark:bg-black/20">
+        <div className="p-4 border-b">
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold">Email Threads</h2>
+            <div className="flex items-center gap-1">
+              {syncStatus.syncing ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <CheckCircle2 className="w-4 h-4 text-green-500" />
+              )}
+              <span className="text-xs text-muted-foreground">
+                {syncStatus.syncing ? "Syncing" : "Synced"}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-4 space-y-2 overflow-y-auto">
+          {threadList.threads.map((t) => (
+            <Card 
+              key={t.id}
+              className="p-3 cursor-pointer hover:shadow-md"
+              onClick={() => thread.switchToThread(t.id)}
+            >
+              <div className="font-medium text-sm">{t.title}</div>
+              <div className="text-xs text-muted-foreground">
+                {new Date(t.updatedAt).toLocaleDateString()}
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+      
+      {/* Main Content */}
+      <div className="flex-1">
+        <EmailStreamingContent mode={mode} setMode={setMode} suggestions={suggestions} />
+      </div>
+    </div>
+  )
+}
+
 // Main Streaming Assistant Component
 export default function EmailStreamingAssistant() {
   const [emailStreams, setEmailStreams] = useState<EmailStream[]>([])
@@ -503,9 +618,34 @@ export default function EmailStreamingAssistant() {
                   <Bot className="w-5 h-5 text-purple-600" />
                   AI Assistant
                 </h3>
+                <BranchPicker className="mt-2" />
               </div>
-              <ThreadMessages className="h-[300px]" />
-              <Composer className="mt-3" placeholder="Ask me anything about your emails..." />
+              <ThreadWelcome>
+                <div className="text-center space-y-3 p-4">
+                  <Sparkles className="w-8 h-8 text-purple-500 mx-auto" />
+                  <p className="text-sm text-muted-foreground">AI-powered email assistant</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <ThreadSuggestion prompt="Summarize emails" className="text-xs p-2 border rounded hover:bg-muted" />
+                    <ThreadSuggestion prompt="Find important" className="text-xs p-2 border rounded hover:bg-muted" />
+                    <ThreadSuggestion prompt="Draft reply" className="text-xs p-2 border rounded hover:bg-muted" />
+                    <ThreadSuggestion prompt="Schedule send" className="text-xs p-2 border rounded hover:bg-muted" />
+                  </div>
+                </div>
+              </ThreadWelcome>
+              <ThreadMessages 
+                className="h-[300px]"
+                components={{
+                  ...emailToolUIs,
+                  EmailDashboard,
+                  EmailWorkflow,
+                  PriorityInbox
+                }}
+              />
+              <Composer 
+                className="mt-3" 
+                placeholder="Ask me anything about your emails..."
+                tools={emailToolUIs}
+              />
             </Thread>
           </Card>
         </div>
