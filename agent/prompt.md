@@ -20,6 +20,8 @@ maybe analyse the mail-0 then make it better
 you can also be using ai alot more for the email
 
 
+do an analysis of if it is done and workable if it is please just send en email on instructions on how to launch it including env setup
+
 
 
 ----
