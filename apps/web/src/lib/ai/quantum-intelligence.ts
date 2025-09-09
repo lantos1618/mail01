@@ -291,9 +291,10 @@ export class EmailMindReader {
 
   private detectPrimaryIntent(email: string, context: any): string {
     // Advanced intent detection
-    if (email.includes("meeting") || email.includes("schedule")) return "scheduling"
-    if (email.includes("review") || email.includes("feedback")) return "review-request"
-    if (email.includes("urgent") || email.includes("asap")) return "urgent-action"
+    const lowerEmail = email.toLowerCase()
+    if (lowerEmail.includes("urgent") || lowerEmail.includes("asap")) return "urgent-action"
+    if (lowerEmail.includes("meeting") || lowerEmail.includes("schedule")) return "scheduling"
+    if (lowerEmail.includes("review") || lowerEmail.includes("feedback")) return "review-request"
     return "information-sharing"
   }
 
