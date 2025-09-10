@@ -109,11 +109,11 @@ export default function Mail01Enhanced() {
 
   const loadEmails = async () => {
     try {
-      const folderEmails = await sendGridService.getEmails(selectedFolder)
-      setEmails(folderEmails)
+      // For now, load sample emails
+      // In production, this would fetch from Gmail API or local storage
+      setEmails(generateSampleEmails())
     } catch (error) {
       console.error('Error loading emails:', error)
-      // Load sample emails as fallback
       setEmails(generateSampleEmails())
     }
   }
@@ -186,13 +186,19 @@ export default function Mail01Enhanced() {
     setIsProcessing(true)
     
     try {
-      const result = await sendGridService.sendEmail({
-        to: composeTo.split(',').map(e => e.trim()),
-        from: 'agent@lambda.run',
-        subject: composeSubject,
-        text: composeContent,
-        html: composeHtml || undefined
+      // Send email via API route
+      const response = await fetch('/api/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: composeTo,
+          subject: composeSubject,
+          text: composeContent,
+          html: composeHtml || undefined
+        })
       })
+      
+      const result = await response.json()
       
       if (result.success) {
         // Clear compose form

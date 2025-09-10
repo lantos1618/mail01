@@ -11,7 +11,6 @@ interface SetupStatus {
   instructions: {
     current_setup: string
     oauth2: string
-    sendgrid: string
     gmail_app_password: string
     fallback: string
   }
@@ -50,7 +49,6 @@ export function EmailSetupGuide() {
   }
   
   const providerBadges = {
-    sendgrid: { label: "SendGrid", variant: "default" as const },
     gmail: { label: "Gmail", variant: "secondary" as const },
     local: { label: "Local", variant: "outline" as const }
   }
@@ -94,24 +92,6 @@ export function EmailSetupGuide() {
         {/* Setup Options */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Setup Options</h3>
-          
-          {/* SendGrid */}
-          <div className="border rounded-lg p-4">
-            <div className="flex justify-between items-start">
-              <div>
-                <h4 className="font-medium">SendGrid (Recommended)</h4>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Professional email delivery service with high reliability
-                </p>
-                <code className="text-xs bg-muted p-1 rounded mt-2 block">
-                  export SENDGRID_API_KEY=your-api-key
-                </code>
-              </div>
-              {status.configured_providers.includes("sendgrid") && (
-                <Badge variant="default">Active</Badge>
-              )}
-            </div>
-          </div>
           
           {/* Gmail OAuth2 */}
           <div className="border rounded-lg p-4">

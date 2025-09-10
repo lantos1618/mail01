@@ -100,9 +100,18 @@ export default function LoginPage() {
               </Button>
 
               <div className="text-center text-sm text-gray-500 mt-4">
-                <p>Demo Accounts:</p>
-                <p className="text-xs mt-1">l.leong1618@gmail.com / demo123</p>
-                <p className="text-xs">agent@lambda.run / agent123</p>
+                <p className="font-semibold">Gmail Users:</p>
+                <p className="text-xs mt-1">Use your Gmail address and an app-specific password</p>
+                <p className="text-xs mt-2">
+                  <a 
+                    href="https://myaccount.google.com/apppasswords" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-purple-400 hover:text-purple-300 underline"
+                  >
+                    Generate app password →
+                  </a>
+                </p>
               </div>
             </form>
           </CardContent>

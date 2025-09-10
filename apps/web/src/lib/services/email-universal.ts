@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer"
 import * as fs from "fs/promises"
 import * as path from "path"
+import { authService } from '@/lib/auth/auth-service'
 
 interface EmailOptions {
   to: string
@@ -22,115 +23,42 @@ interface EmailProvider {
   isConfigured: () => boolean
 }
 
-// SendGrid Provider
-class SendGridProvider implements EmailProvider {
-  name = "sendgrid"
-  private apiKey: string | undefined
-  
-  constructor() {
-    this.apiKey = process.env.SENDGRID_API_KEY
-  }
-  
-  isConfigured(): boolean {
-    return !!this.apiKey
-  }
-  
-  async send(options: EmailOptions): Promise<{ success: boolean; messageId: string; provider: string }> {
-    if (!this.apiKey) {
-      throw new Error("SendGrid API key not configured")
-    }
-    
-    const { to, subject, text, html, from = "agent@lambda.run", cc, bcc } = options
-    
-    const sgMail = {
-      personalizations: [{
-        to: [{ email: to }],
-        ...(cc && { cc: [{ email: cc }] }),
-        ...(bcc && { bcc: [{ email: bcc }] })
-      }],
-      from: { email: from },
-      subject,
-      content: [
-        { type: "text/plain", value: text },
-        ...(html ? [{ type: "text/html", value: html }] : [])
-      ]
-    }
-    
-    try {
-      const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${this.apiKey}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(sgMail)
-      })
-      
-      if (response.ok) {
-        const messageId = response.headers.get("X-Message-Id") || `sg_${Date.now()}`
-        console.log(`Email sent successfully via SendGrid: ${messageId}`)
-        return { success: true, messageId, provider: "sendgrid" }
-      } else {
-        const errorText = await response.text()
-        throw new Error(`SendGrid error: ${response.status} - ${errorText}`)
-      }
-    } catch (error) {
-      console.error("SendGrid send error:", error)
-      throw error
-    }
-  }
-}
-
-// Gmail Provider with OAuth2 support
+// Gmail Provider - uses authenticated user's credentials
 class GmailProvider implements EmailProvider {
   name = "gmail"
   private transporter: nodemailer.Transporter | null = null
-  private config: {
-    user?: string
-    pass?: string
-    clientId?: string
-    clientSecret?: string
-    refreshToken?: string
-    accessToken?: string
-  }
   
   constructor() {
-    this.config = {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
-      accessToken: process.env.GOOGLE_ACCESS_TOKEN
-    }
-    
     this.initializeTransporter()
   }
   
   private initializeTransporter() {
-    // OAuth2 configuration (preferred)
-    if (this.config.clientId && this.config.clientSecret && this.config.refreshToken) {
-      this.transporter = nodemailer.createTransporter({
+    // Try to get credentials from authenticated user first
+    const userCredentials = authService.getEmailCredentials()
+    
+    if (userCredentials) {
+      // Use authenticated user's credentials
+      this.transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          type: "OAuth2",
-          user: this.config.user,
-          clientId: this.config.clientId,
-          clientSecret: this.config.clientSecret,
-          refreshToken: this.config.refreshToken,
-          accessToken: this.config.accessToken
+          user: userCredentials.user,
+          pass: userCredentials.pass
         }
       })
-    }
-    // App password configuration (fallback)
-    else if (this.config.user && this.config.pass) {
-      this.transporter = nodemailer.createTransporter({
-        service: "gmail",
-        auth: {
-          user: this.config.user,
-          pass: this.config.pass
-        }
-      })
+    } else {
+      // Fall back to environment variables if available
+      const envUser = process.env.GMAIL_USER
+      const envPass = process.env.GMAIL_APP_PASSWORD
+      
+      if (envUser && envPass) {
+        this.transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: envUser,
+            pass: envPass
+          }
+        })
+      }
     }
   }
   
@@ -139,11 +67,18 @@ class GmailProvider implements EmailProvider {
   }
   
   async send(options: EmailOptions): Promise<{ success: boolean; messageId: string; provider: string }> {
+    // Re-initialize transporter to get latest user credentials
+    this.initializeTransporter()
+    
     if (!this.transporter) {
-      throw new Error("Gmail not configured")
+      throw new Error("Gmail not configured. Please log in with your Gmail credentials.")
     }
     
-    const { to, subject, text, html, from = this.config.user || "agent@lambda.run", cc, bcc } = options
+    // Get the authenticated user's email for the from field
+    const userCredentials = authService.getEmailCredentials()
+    const fromEmail = userCredentials?.user || process.env.GMAIL_USER || "agent@lambda.run"
+    
+    const { to, subject, text, html, from = fromEmail, cc, bcc } = options
     
     const mailOptions = {
       from,
@@ -187,9 +122,8 @@ class UniversalEmailService {
   private providers: EmailProvider[] = []
   
   constructor() {
-    // Initialize providers in priority order
+    // Initialize Gmail as primary provider with local fallback
     this.providers = [
-      new SendGridProvider(),
       new GmailProvider(),
       new LocalProvider()
     ]

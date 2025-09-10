@@ -37,7 +37,6 @@ export async function GET(request: NextRequest) {
           ? `Currently using: ${providers.join(", ")}` 
           : "No email providers configured",
         oauth2: "Visit /api/auth/setup?action=oauth2 to set up Gmail OAuth2",
-        sendgrid: "Add SENDGRID_API_KEY to environment",
         gmail_app_password: "Add GMAIL_USER and GMAIL_APP_PASSWORD to environment",
         fallback: "Emails will be saved locally if no provider is configured"
       }

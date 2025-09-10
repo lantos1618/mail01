@@ -117,6 +117,8 @@ please address these issues and do the right thing
 do not revert to send grid, all I want to do is launch this and log in with my email... username and password not by env not by eird things like a click here to sign in with google or just my email and password...
 
 
+PLEASE REMOVE ANY SENDGRID STUFF FROM THE mail01 this should only be using gmail... no sendgrid no outlook...
+
 ----
 you can send an email using sendgrid (I put our apikey in env) you can use curl, if you want you can save in agent/inbox/(sent or recieved)
 to: l.leong1618@gmail.com
