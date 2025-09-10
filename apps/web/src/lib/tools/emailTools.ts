@@ -103,7 +103,7 @@ export const extractTasksTool = tool({
 })
 
 export const sendEmailTool = tool({
-  description: "Send an email via SendGrid",
+  description: "Send an email via Gmail",
   parameters: z.object({
     to: z.string().describe("Recipient email address"),
     subject: z.string().describe("Email subject"),

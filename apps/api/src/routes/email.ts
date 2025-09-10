@@ -3,7 +3,7 @@ import { z } from "zod"
 import { getDb } from "../db"
 import { emails } from "../db/schema"
 import { eq, desc } from "drizzle-orm"
-import { sendEmail } from "../services/sendgrid"
+import { sendEmail } from "../services/gmail"
 import { analyzeEmail, generateSmartReply, summarizeEmailThread, extractTasksFromEmails } from "../services/emailAI"
 
 const emailRoutes = new Hono()
@@ -82,7 +82,7 @@ emailRoutes.post("/send", async (c) => {
     const body = await c.req.json()
     const data = sendEmailSchema.parse(body)
     
-    // Send via SendGrid
+    // Send via Gmail
     const result = await sendEmail({
       to: data.to,
       subject: data.subject,

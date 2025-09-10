@@ -10,17 +10,18 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.14.0",
-    "@sendgrid/mail": "^8.1.5",
     "@ai-sdk/openai": "^1.0.0",
     "ai": "^4.0.0",
     "better-sqlite3": "^11.8.1",
     "drizzle-orm": "^0.38.3",
     "hono": "^4.6.16",
+    "nodemailer": "^7.0.6",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.12",
     "@types/node": "^22.5.0",
+    "@types/nodemailer": "^7.0.1",
     "drizzle-kit": "^0.30.2",
     "tsx": "^4.19.2",
     "typescript": "^5.6.2"

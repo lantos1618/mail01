@@ -39,5 +39,4 @@ serve({
 // Export services and tools for use in other packages
 export * from "./services/emailAI"
 export * from "./services/emailAgent"
-export * from "./services/sendgrid"
 export * from "./tools/emailTools"

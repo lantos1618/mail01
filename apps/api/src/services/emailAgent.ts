@@ -1,6 +1,6 @@
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
-import { sendEmail } from "./sendgrid"
+import { sendEmail } from "./gmail"
 import { analyzeEmail, extractTasksFromEmails } from "./emailAI"
 import * as fs from "fs/promises"
 import * as path from "path"

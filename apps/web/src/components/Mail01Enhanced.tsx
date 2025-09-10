@@ -30,7 +30,7 @@ import {
   Upload, Paperclip, Calendar, Users, BarChart3
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { sendGridService } from '@/lib/email/sendgrid-enhanced'
+import { gmail } from '@/lib/email/gmail'
 import { useRevolutionaryEmailRuntime } from '@/lib/ai/assistant-runtime'
 
 interface Email {

@@ -15,7 +15,7 @@ import {
   receiveEmail, 
   getInboxEmails, 
   archiveEmail 
-} from "../services/sendgrid"
+} from "../services/gmail"
 import { EmailAgent } from "../services/emailAgent"
 
 // Initialize email agent
@@ -242,7 +242,7 @@ export const generateDailyDigestTool = tool({
     const today = date || new Date().toISOString().split('T')[0]
     
     // Filter emails from the specified date
-    const todaysEmails = emails.filter(e => 
+    const todaysEmails = emails.filter((e: any) => 
       e.timestamp.startsWith(today)
     )
     

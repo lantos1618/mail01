@@ -1,7 +1,7 @@
 import { openai } from '@ai-sdk/openai'
 import { streamText } from 'ai'
 import { emailIntelligence } from '@/lib/ai/email-intelligence'
-import { sendgrid } from '@/lib/email/sendgrid'
+import { gmail } from '@/lib/email/gmail'
 
 export const runtime = 'edge'
 
