@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useAuth } from '@/contexts/AuthContext'
 import {
   AssistantRuntimeProvider,
   useLocalRuntime,
@@ -36,7 +37,9 @@ import {
   Bot,
   Workflow,
   Network,
-  Activity
+  Activity,
+  LogOut,
+  User
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRevolutionaryEmailRuntime, emailTools } from '@/lib/ai/assistant-runtime'
@@ -66,6 +69,7 @@ interface SwarmResult {
 }
 
 export default function MailOneUltimate() {
+  const { user, logout } = useAuth()
   const [emails, setEmails] = useState<Email[]>([])
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null)
   const [activeMode, setActiveMode] = useState<'quantum' | 'swarm' | 'hyper' | 'stream'>('quantum')
@@ -238,11 +242,30 @@ export default function MailOneUltimate() {
         {/* Sidebar */}
         <div className="w-80 border-r bg-white dark:bg-gray-900 flex flex-col">
           <div className="p-4 border-b">
-            <div className="flex items-center gap-2 mb-4">
-              <Brain className="w-8 h-8 text-purple-600 animate-pulse" />
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Mail-01 Ultimate
-              </h1>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Brain className="w-8 h-8 text-purple-600 animate-pulse" />
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  Mail-01 Ultimate
+                </h1>
+              </div>
+              <Button
+                onClick={logout}
+                size="icon"
+                variant="ghost"
+                className="text-gray-500 hover:text-red-500"
+                title="Logout"
+              >
+                <LogOut className="w-5 h-5" />
+              </Button>
+            </div>
+            
+            {/* User Info */}
+            <div className="flex items-center gap-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg mb-4">
+              <User className="w-4 h-4 text-gray-500" />
+              <span className="text-sm text-gray-600 dark:text-gray-400 truncate">
+                {user?.email}
+              </span>
             </div>
             
             {/* Mode Selector */}

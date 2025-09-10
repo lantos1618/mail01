@@ -1,9 +1,12 @@
 import MailOneUltimate from "@/components/MailOneUltimate"
+import ProtectedRoute from "@/components/ProtectedRoute"
 
 export default function Home() {
   return (
-    <main className="flex h-screen">
-      <MailOneUltimate />
-    </main>
+    <ProtectedRoute>
+      <main className="flex h-screen">
+        <MailOneUltimate />
+      </main>
+    </ProtectedRoute>
   )
 }
