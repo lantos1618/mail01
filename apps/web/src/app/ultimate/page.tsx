@@ -250,7 +250,7 @@ export default function UltimateMailPage() {
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-green-500" />
-                    SendGrid for email delivery
+                    Gmail API for email delivery
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-green-500" />

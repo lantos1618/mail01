@@ -89,7 +89,7 @@ export default function Mail01Simple() {
     setIsProcessing(true)
     
     try {
-      // Call SendGrid API
+      // Call Gmail API
       const response = await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

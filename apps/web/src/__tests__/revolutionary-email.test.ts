@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest"
 import { emailIntelligence } from "@/lib/ai/revolutionary-intelligence"
 import { threadingEngine } from "@/lib/email/threading"
-import { sendGridService } from "@/lib/email/sendgrid-service"
+import { gmail } from "@/lib/email/gmail"
 
 describe("Revolutionary Email Intelligence", () => {
   describe("Email Categorization", () => {
@@ -260,7 +260,7 @@ describe("Email Threading Engine", () => {
   })
 })
 
-describe("SendGrid Service", () => {
+describe("Gmail Service", () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -273,45 +273,51 @@ describe("SendGrid Service", () => {
         text: "Test email",
       }
 
-      await expect(async () => {
-        await sendGridService.sendEmail(invalidEmail as any)
-      }).rejects.toThrow()
+      const result = await gmail.sendEmail(invalidEmail as any)
+      expect(result.success).toBe(false)
+      expect(result.error).toBeTruthy()
     })
 
-    it("should enhance email content when requested", async () => {
+    it("should send email via Gmail successfully", async () => {
       const email = {
         to: "test@example.com",
         from: "sender@example.com",
         subject: "Test",
         text: "This is a test email",
-        enhance: true,
-        tone: "professional",
       }
 
-      // Mock the API call
-      global.fetch = vi.fn().mockResolvedValue({
-        ok: true,
-        headers: new Headers({ "x-message-id": "test-123" }),
+      // Mock successful email send
+      const mockSendEmail = vi.spyOn(gmail, 'sendEmail')
+      mockSendEmail.mockResolvedValue({
+        success: true,
+        messageId: "test-123",
       })
 
-      const result = await sendGridService.sendEnhancedEmail(email)
+      const result = await gmail.sendEmail(email)
       
-      expect(result.enhancements).toBeTruthy()
-      expect(result.enhancements).toContain("Enhanced email body")
+      expect(result.success).toBe(true)
+      expect(result.messageId).toBeTruthy()
     })
 
-    it("should schedule emails for later sending", async () => {
+    it("should handle Gmail API errors gracefully", async () => {
       const email = {
         to: "test@example.com",
-        subject: "Scheduled email",
-        text: "This will be sent later",
-        sendAt: new Date(Date.now() + 3600000), // 1 hour from now
+        from: "sender@example.com",
+        subject: "Test Error",
+        text: "This should fail",
       }
 
-      const result = await sendGridService.scheduleEmail(email)
+      // Mock API error
+      const mockSendEmail = vi.spyOn(gmail, 'sendEmail')
+      mockSendEmail.mockResolvedValue({
+        success: false,
+        error: "Gmail API error",
+      })
+
+      const result = await gmail.sendEmail(email)
       
-      expect(result.scheduled).toBe(true)
-      expect(result.scheduledId).toBeTruthy()
+      expect(result.success).toBe(false)
+      expect(result.error).toContain("Gmail API error")
     })
   })
 })

@@ -1,0 +1,23 @@
+{
+  "from": "agent@lambda.run",
+  "to": "",
+  "subject": "Test",
+  "text": "Test email",
+  "html": "Test email",
+  "folder": "sent",
+  "timestamp": "2025-09-10T15:55:15.092Z",
+  "messageId": "local_1757519715090",
+  "priority": "normal",
+  "labels": [],
+  "id": "sent_1757519715092",
+  "status": "sent",
+  "metadata": {
+    "sender": "agent@lambda.run",
+    "recipient": "",
+    "subject": "Test",
+    "hasAttachments": false,
+    "threadId": null,
+    "labels": [],
+    "priority": "normal"
+  }
+}
