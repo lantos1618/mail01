@@ -6,6 +6,7 @@ import {
   useLocalRuntime,
   useAssistantTool
 } from '@assistant-ui/react'
+import { Thread, Composer } from '@assistant-ui/react-ui'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -203,12 +204,32 @@ export default function MailOneUltimate() {
   }, [handleSwarmProcess])
 
   const assistantRuntime = useLocalRuntime({
-    initialMessages: [
-      {
-        role: 'assistant',
-        content: 'Welcome to Mail-01 Ultimate! I am your hyper-intelligent email assistant with quantum processing, swarm intelligence, and autonomous capabilities. How can I revolutionize your email experience today?'
+    run: async ({ messages }) => {
+      // Process messages with quantum intelligence
+      const lastMessage = messages[messages.length - 1]
+      if (lastMessage?.role === 'user') {
+        // Process with swarm intelligence
+        const messageText = lastMessage.content
+          .filter((part: any) => part.type === 'text')
+          .map((part: any) => part.text)
+          .join(' ')
+        await handleSwarmProcess(messageText)
+        
+        return {
+          content: [{
+            type: 'text',
+            text: swarmResults?.consensus || 'I am processing your request with quantum intelligence. How else can I help you today?'
+          }]
+        }
       }
-    ]
+      
+      return {
+        content: [{
+          type: 'text',
+          text: 'Welcome to Mail-01 Ultimate! I am your hyper-intelligent email assistant with quantum processing, swarm intelligence, and autonomous capabilities. How can I revolutionize your email experience today?'
+        }]
+      }
+    }
   })
 
   return (

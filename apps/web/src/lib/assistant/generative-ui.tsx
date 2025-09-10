@@ -125,7 +125,7 @@ export const EmailDashboard = ({ data }: { data: z.infer<typeof EmailDashboardSc
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge variant={
-                    contact.sentiment === "positive" ? "success" :
+                    contact.sentiment === "positive" ? "default" :
                     contact.sentiment === "negative" ? "destructive" : "secondary"
                   } className="text-xs">
                     {contact.sentiment}

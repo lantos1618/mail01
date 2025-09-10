@@ -133,7 +133,7 @@ export class EmailIntelligence {
     if (actionKeywords.some(k => text.includes(k))) {
       items.push({
         action: "Review and respond to request",
-        priority: text.includes("urgent") ? "high" : "medium",
+        priority: (text.includes("urgent") ? "high" : "medium") as "high" | "medium" | "low",
         assignee: "You",
       })
     }

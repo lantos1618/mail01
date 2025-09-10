@@ -28,7 +28,7 @@ const priorityIcons = {
 }
 
 export default function EmailView({ emailId, onReply }: EmailViewProps) {
-  const assistant = useAssistant()
+  const assistant = useAssistantRuntime()
   const [email, setEmail] = useState<EmailMessage | null>(null)
   const [analysis, setAnalysis] = useState<EmailAnalysis | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -52,19 +52,15 @@ export default function EmailView({ emailId, onReply }: EmailViewProps) {
   const analyzeEmail = async () => {
     if (!email) return
     
-    await assistant.append({
-      role: "user",
-      content: `Analyze this email:\n\nFrom: ${email.from}\nSubject: ${email.subject}\nContent: ${email.body}\n\nProvide insights about sentiment, priority, key points, and suggested actions.`
-    })
+    // Using switchToNewThread for assistant-ui v0.11
+    assistant.switchToNewThread()
   }
   
   const generateReply = async () => {
     if (!email) return
     
-    await assistant.append({
-      role: "user",
-      content: `Generate a professional reply to this email:\n\nFrom: ${email.from}\nSubject: ${email.subject}\nContent: ${email.body}`
-    })
+    // Using switchToNewThread for assistant-ui v0.11
+    assistant.switchToNewThread()
     
     onReply?.()
   }

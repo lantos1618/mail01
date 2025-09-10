@@ -306,7 +306,7 @@ export class MultiModalEmailProcessor {
   }
   
   private findCrossReferences(email: any, attachmentAnalysis: any[]) {
-    const references = []
+    const references: any[] = []
     
     // Check if email body references attachment content
     attachmentAnalysis.forEach(attachment => {

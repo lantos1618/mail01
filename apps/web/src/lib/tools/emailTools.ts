@@ -15,7 +15,7 @@ import {
   receiveEmail, 
   getInboxEmails, 
   archiveEmail 
-} from "../services/sendgrid"
+} from "../services/gmail"
 import { EmailAgent } from "../services/emailAgent"
 
 // Initialize email agent

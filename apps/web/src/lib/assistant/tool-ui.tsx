@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { 
-  Send, Archive, Star, Reply, Forward, Trash, 
-  Calendar, Clock, CheckCircle, XCircle, AlertCircle 
+  Send, Archive, Star, Reply, Forward, Trash, Search,
+  Calendar, Clock, CheckCircle, XCircle, AlertCircle, FileText
 } from "lucide-react"
 import { useState } from "react"
 
@@ -22,11 +22,12 @@ const SendEmailSchema = z.object({
   schedule: z.string().optional()
 })
 
-export const SendEmailToolUI = makeAssistantToolUI<z.infer<typeof SendEmailSchema>>({
-  name: "send_email",
-  description: "Send an email with AI enhancement",
-  parameters: SendEmailSchema,
-  render: ({ args, status, result }) => {
+export const SendEmailToolUI = makeAssistantToolUI({
+  toolName: "send_email",
+  render: (toolCallMessage) => {
+    const args = toolCallMessage.args as z.infer<typeof SendEmailSchema>
+    const status = toolCallMessage.status?.type
+    const result = toolCallMessage.result as any
     const [expanded, setExpanded] = useState(false)
     
     return (
@@ -36,10 +37,9 @@ export const SendEmailToolUI = makeAssistantToolUI<z.infer<typeof SendEmailSchem
             <div className="flex items-center gap-2 mb-2">
               <Send className="w-4 h-4 text-blue-500" />
               <span className="font-semibold">Sending Email</span>
-              {status === "pending" && <Badge variant="secondary">Preparing</Badge>}
-              {status === "streaming" && <Badge variant="default">Sending</Badge>}
-              {status === "complete" && <Badge variant="success">Sent</Badge>}
-              {status === "error" && <Badge variant="destructive">Failed</Badge>}
+              {status === "running" && <Badge variant="secondary">Sending</Badge>}
+              {status === "complete" && <Badge variant="default">Sent</Badge>}
+              {status === "incomplete" && <Badge variant="destructive">Failed</Badge>}
             </div>
             
             <div className="space-y-1 text-sm">
@@ -103,17 +103,18 @@ const SearchEmailsSchema = z.object({
   }).optional()
 })
 
-export const SearchEmailsToolUI = makeAssistantToolUI<z.infer<typeof SearchEmailsSchema>>({
-  name: "search_emails",
-  description: "Search emails with natural language",
-  parameters: SearchEmailsSchema,
-  render: ({ args, status, result }) => {
+export const SearchEmailsToolUI = makeAssistantToolUI({
+  toolName: "search_emails",
+  render: (toolCallMessage) => {
+    const args = toolCallMessage.args as z.infer<typeof SearchEmailsSchema>
+    const status = toolCallMessage.status?.type
+    const result = toolCallMessage.result as any
     return (
       <Card className="p-4 my-2 border-l-4 border-l-purple-500">
         <div className="flex items-center gap-2 mb-2">
           <Search className="w-4 h-4 text-purple-500" />
           <span className="font-semibold">Searching Emails</span>
-          {status === "streaming" && (
+          {status === "running" && (
             <div className="flex gap-1">
               <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
               <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse delay-100" />
@@ -157,11 +158,12 @@ const CategorizeEmailSchema = z.object({
   suggestedCategories: z.array(z.string())
 })
 
-export const CategorizeEmailToolUI = makeAssistantToolUI<z.infer<typeof CategorizeEmailSchema>>({
-  name: "categorize_email",
-  description: "AI-powered email categorization",
-  parameters: CategorizeEmailSchema,
-  render: ({ args, status, result }) => {
+export const CategorizeEmailToolUI = makeAssistantToolUI({
+  toolName: "categorize_email",
+  render: (toolCallMessage) => {
+    const args = toolCallMessage.args as z.infer<typeof CategorizeEmailSchema>
+    const status = toolCallMessage.status?.type
+    const result = toolCallMessage.result as any
     const categoryIcons: Record<string, any> = {
       important: AlertCircle,
       work: Calendar,
@@ -205,17 +207,18 @@ const SummarizeThreadSchema = z.object({
   style: z.enum(["brief", "detailed", "action-items"]).optional()
 })
 
-export const SummarizeThreadToolUI = makeAssistantToolUI<z.infer<typeof SummarizeThreadSchema>>({
-  name: "summarize_thread",
-  description: "Generate AI summary of email thread",
-  parameters: SummarizeThreadSchema,
-  render: ({ args, status, result }) => {
+export const SummarizeThreadToolUI = makeAssistantToolUI({
+  toolName: "summarize_thread",
+  render: (toolCallMessage) => {
+    const args = toolCallMessage.args as z.infer<typeof SummarizeThreadSchema>
+    const status = toolCallMessage.status?.type
+    const result = toolCallMessage.result as any
     return (
       <Card className="p-4 my-2 border-l-4 border-l-green-500">
         <div className="flex items-center gap-2 mb-2">
           <FileText className="w-4 h-4 text-green-500" />
           <span className="font-semibold">Thread Summary</span>
-          {status === "streaming" && <Badge>Analyzing</Badge>}
+          {status === "running" && <Badge>Analyzing</Badge>}
         </div>
         
         {result && (

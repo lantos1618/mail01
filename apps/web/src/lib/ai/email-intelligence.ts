@@ -78,7 +78,7 @@ export class EmailIntelligenceService {
       category: this.detectCategory(email),
       sentiment: this.detectSentiment(email.body),
       summary: this.generateSummary(email.body),
-      actionItems: this.extractActionItems(email.body),
+      actionItems: await this.extractActionItems(email.body),
       keyPeople: this.extractPeople(email),
       topics: this.extractTopics(email.body),
       requiresAction: hasActionKeywords,

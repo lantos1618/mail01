@@ -1,26 +1,4 @@
-port mail0 to assistant-ui
-
-make the mail0 client better..
-
-this is the assistant ui
-https://www.assistant-ui.com/llms-full.txt
-
-
-this is the mail0
-https://github.com/Mail-0/Zero
-
-
-
-we also want to call this mail-01
-
-you can be completely opinionated anywhere if you think you can do this much much better
-
-maybe analyse the mail-0 then make it better
-
-you can also be using ai alot more for the email
-
-
-do an analysis of if it is done and workable if it is please just send en email on instructions on how to launch it including env setup
+we were meant to only support gmail not sendgred in mail01
 
 
 

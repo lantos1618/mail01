@@ -13,7 +13,7 @@ Mail-01 is a complete reimagining of Mail-0, transforming it into an AI-first em
 
 ### Backend
 - **API**: Next.js API routes with tRPC
-- **Email Service**: SendGrid for sending
+- **Email Service**: Gmail API with Nodemailer
 - **Storage**: File-based (agent/inbox/)
 - **AI Providers**: OpenAI/Anthropic via assistant-ui runtime
 
@@ -25,7 +25,7 @@ Mail-01 is a complete reimagining of Mail-0, transforming it into an AI-first em
 ✅ Rich email composer
 ✅ Real-time email list updates
 ✅ Email archiving and management
-✅ SendGrid integration for sending
+✅ Gmail integration for sending (transitioned from SendGrid)
 ✅ File-based inbox storage system
 
 ### AI Enhancements
@@ -105,7 +105,7 @@ mail-01/
 - Comprehensive test coverage
 
 ## API Keys & Configuration
-- SendGrid API key: Set in environment variables
+- Gmail: Uses app-specific password or OAuth2
 - AI providers: Configured through assistant-ui runtime
 - Storage: Local file system (agent/inbox/)
 

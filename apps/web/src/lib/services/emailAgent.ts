@@ -1,6 +1,6 @@
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
-import { sendEmail } from "./sendgrid"
+import { sendEmail } from "./gmail"
 import { analyzeEmail, extractTasksFromEmails } from "./emailAI"
 import * as fs from "fs/promises"
 import * as path from "path"
@@ -149,7 +149,7 @@ Generate a polite, professional auto-reply.`,
   private async learnFromEmail(email: any, analysis: any) {
     // Store patterns for future use
     const patternsPath = path.join(process.cwd(), '.agent', 'patterns.json')
-    let patterns = {}
+    let patterns: any = {}
     
     try {
       const content = await fs.readFile(patternsPath, 'utf-8')

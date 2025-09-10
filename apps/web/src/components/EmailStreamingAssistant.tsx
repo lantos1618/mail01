@@ -613,14 +613,14 @@ export default function EmailStreamingAssistant() {
           <EmailIntelligenceDashboard />
           
           <Card className="p-4">
-            <Thread>
-              <div className="mb-3">
-                <h3 className="font-semibold flex items-center gap-2">
-                  <Bot className="w-5 h-5 text-purple-600" />
-                  AI Assistant
-                </h3>
-                <BranchPicker />
-              </div>
+            <Thread />
+            <div className="mb-3">
+              <h3 className="font-semibold flex items-center gap-2">
+                <Bot className="w-5 h-5 text-purple-600" />
+                AI Assistant
+              </h3>
+              <BranchPicker />
+            </div>
               {/* ThreadWelcome and ThreadSuggestion components would be here if available */}
               <div className="text-center space-y-3 p-4">
                 <Sparkles className="w-8 h-8 text-purple-500 mx-auto" />
@@ -643,10 +643,7 @@ export default function EmailStreamingAssistant() {
                   EmailWorkflow,
                   PriorityInbox
                 }}*/}
-              <Composer 
-                placeholder="Ask me anything about your emails..."
-              />
-            </Thread>
+            <Composer />
           </Card>
         </div>
       </div>

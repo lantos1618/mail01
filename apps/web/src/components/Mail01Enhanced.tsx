@@ -5,7 +5,7 @@ import {
   AssistantRuntimeProvider,
   useLocalRuntime,
   useAssistantTool,
-  useAssistantContext,
+  useAssistantRuntime,
   MessagePrimitive,
   ThreadPrimitive,
   ComposerPrimitive,
@@ -76,16 +76,28 @@ export default function Mail01Enhanced() {
   
   // Assistant-UI Runtime
   const assistantRuntime = useLocalRuntime({
-    initialMessages: [
-      {
-        role: 'assistant',
-        content: 'Welcome to Mail-01! I can help you manage emails, compose messages, and analyze your inbox using advanced AI. How can I assist you today?'
+    run: async ({ messages }) => {
+      const lastMessage = messages[messages.length - 1]
+      if (lastMessage?.role === 'user') {
+        // Process user message with AI
+        const messageText = lastMessage.content
+          .filter((part: any) => part.type === 'text')
+          .map((part: any) => part.text)
+          .join(' ')
+        const response = await handleAIQuery(messageText)
+        return {
+          content: [{
+            type: 'text',
+            text: response || 'Processing your request...'
+          }]
+        }
       }
-    ],
-    onNewMessage: async (message) => {
-      if (message.role === 'user') {
-        // Process user queries with AI
-        await handleAIQuery(message.content)
+      
+      return {
+        content: [{
+          type: 'text',
+          text: 'Welcome to Mail-01! I can help you manage emails, compose messages, and analyze your inbox using advanced AI. How can I assist you today?'
+        }]
       }
     }
   })
@@ -143,7 +155,7 @@ export default function Mail01Enhanced() {
     ]
   }
 
-  const handleAIQuery = async (query: string) => {
+  const handleAIQuery = async (query: string): Promise<string> => {
     setIsProcessing(true)
     
     try {
@@ -152,18 +164,19 @@ export default function Mail01Enhanced() {
         // AI-assisted composition
         const result = await swarmProcess(query, { emails, currentFolder: selectedFolder })
         setComposeMode(true)
-        // Parse AI response to populate compose fields
+        return `I'm helping you compose an email. ${result?.result || 'Please provide more details.'}`
       } else if (query.toLowerCase().includes('analyze') || query.toLowerCase().includes('summary')) {
         // Email analysis
         const analysis = await processEmail(selectedEmail || emails[0])
-        // Display analysis results
+        return `Email analysis complete: ${JSON.stringify(analysis?.dimensions || {})}`
       } else {
         // General assistance
-        const response = await runtime.generateWithAI(query, { emails, selectedEmail })
-        // Handle response
+        const response = await swarmProcess(query, { emails, selectedEmail })
+        return response?.result || 'I can help you with email management, composition, and analysis. What would you like to do?'
       }
     } catch (error) {
       console.error('AI processing error:', error)
+      return 'I encountered an error processing your request. Please try again.'
     } finally {
       setIsProcessing(false)
     }
@@ -509,7 +522,7 @@ export default function Mail01Enhanced() {
                   </TabsContent>
 
                   <TabsContent value="assistant" className="h-full p-0">
-                    <Thread className="h-full" />
+                    <Thread />
                   </TabsContent>
 
                   <TabsContent value="analysis" className="p-6">

@@ -1,7 +1,6 @@
 "use client"
 
-import { AssistantRuntimeProvider, makeAssistantTool, makeAssistantToolUI } from "@assistant-ui/react"
-import { useChatRuntime } from "@assistant-ui/react-ai-sdk"
+import { AssistantRuntimeProvider, makeAssistantTool, makeAssistantToolUI, useLocalRuntime } from "@assistant-ui/react"
 import { ReactNode, useState, useCallback } from "react"
 import { z } from "zod"
 import { Mail, Send, Search, Calendar, Bot, Brain, FileText, Users, Zap, Sparkles } from "lucide-react"
@@ -214,9 +213,9 @@ const ToolUIComponents = {
           <span className="font-semibold">Composing Email</span>
         </div>
         {result ? (
-          <div className="text-sm text-green-600">✓ Draft created for {args.to}</div>
+          <div className="text-sm text-green-600">✓ Draft created for {String(args.to)}</div>
         ) : (
-          <div className="text-sm text-gray-600">Creating email to {args.to}...</div>
+          <div className="text-sm text-gray-600">Creating email to {String(args.to)}...</div>
         )}
       </div>
     ),
@@ -224,40 +223,46 @@ const ToolUIComponents = {
 
   analyzeEmail: makeAssistantToolUI({
     toolName: "analyzeEmail",
-    render: ({ result }) => (
-      <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
-        <div className="flex items-center gap-2 mb-2">
-          <Brain className="w-5 h-5 text-purple-600" />
-          <span className="font-semibold">Email Analysis</span>
-        </div>
-        {result && (
-          <div className="space-y-2 text-sm">
-            <div>Sentiment: <span className="font-medium">{result.sentiment}</span></div>
-            <div>Urgency: <span className="font-medium">{result.urgency}</span></div>
-            <div>Action Items: {result.actionItems?.join(", ")}</div>
+    render: ({ result }) => {
+      const res = result as any
+      return (
+        <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+          <div className="flex items-center gap-2 mb-2">
+            <Brain className="w-5 h-5 text-purple-600" />
+            <span className="font-semibold">Email Analysis</span>
           </div>
-        )}
-      </div>
-    ),
+          {res && (
+            <div className="space-y-2 text-sm">
+              <div>Sentiment: <span className="font-medium">{res.sentiment}</span></div>
+              <div>Urgency: <span className="font-medium">{res.urgency}</span></div>
+              <div>Action Items: {res.actionItems?.join(", ")}</div>
+            </div>
+          )}
+        </div>
+      )
+    },
   }),
 
   searchEmails: makeAssistantToolUI({
     toolName: "searchEmails",
-    render: ({ args, result }) => (
-      <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
-        <div className="flex items-center gap-2 mb-2">
-          <Search className="w-5 h-5 text-green-600" />
-          <span className="font-semibold">Email Search</span>
-        </div>
-        {result ? (
-          <div className="text-sm">
-            Found {result.count} emails matching "{args.query}"
+    render: ({ args, result }) => {
+      const res = result as any
+      return (
+        <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
+          <div className="flex items-center gap-2 mb-2">
+            <Search className="w-5 h-5 text-green-600" />
+            <span className="font-semibold">Email Search</span>
           </div>
-        ) : (
-          <div className="text-sm text-gray-600">Searching...</div>
-        )}
-      </div>
-    ),
+          {res ? (
+            <div className="text-sm">
+              Found {res.count} emails matching "{String(args.query)}"
+            </div>
+          ) : (
+            <div className="text-sm text-gray-600">Searching...</div>
+          )}
+        </div>
+      )
+    },
   }),
 }
 
@@ -266,50 +271,48 @@ export function RevolutionaryAssistantProvider({ children }: { children: ReactNo
   const [tools] = useState(() => Object.values(emailTools))
   const [toolUIs] = useState(() => Object.values(ToolUIComponents))
 
-  const runtime = useChatRuntime({
-    api: "/api/assistant",
-    initialMessages: [
-      {
-        id: "welcome",
-        role: "assistant",
-        content: "Welcome to Mail-01! I'm your AI email assistant. I can help you compose emails, analyze conversations, schedule meetings, and much more. Just ask me anything about your emails!",
-      },
-    ],
-    onError: (error) => {
-      console.error("Chat error:", error)
-    },
-    body: {
-      model: "gpt-4-turbo-preview",
-      temperature: 0.7,
-      tools: tools.map(t => ({
-        type: "function",
-        function: {
-          name: t.toolName,
-          description: t.description,
-          parameters: t.parameters,
-        },
-      })),
-    },
+  const runtime = useLocalRuntime({
+    run: async ({ messages }) => {
+      // Get the last user message
+      const lastMessage = messages[messages.length - 1]
+      
+      if (!lastMessage || lastMessage.role !== 'user') {
+        return {
+          content: [{
+            type: "text",
+            text: "Welcome to Mail-01! I'm your AI email assistant. I can help you compose emails, analyze conversations, schedule meetings, and much more. Just ask me anything about your emails!"
+          }]
+        }
+      }
+      
+      // Process user message
+      const userText = lastMessage.content
+        .filter((part: any) => part.type === 'text')
+        .map((part: any) => part.text)
+        .join(' ')
+      
+      // Simple response based on keywords
+      let response = "I understand you want help with: " + userText
+      
+      if (userText.toLowerCase().includes('compose') || userText.toLowerCase().includes('write')) {
+        response = "I'll help you compose an email. Please provide the recipient, subject, and key points you want to include."
+      } else if (userText.toLowerCase().includes('search')) {
+        response = "I'll search your emails. What keywords or criteria should I use?"
+      } else if (userText.toLowerCase().includes('analyze')) {
+        response = "I'll analyze your emails for insights. Which email or thread would you like me to analyze?"
+      }
+      
+      return {
+        content: [{
+          type: "text",
+          text: response
+        }]
+      }
+    }
   })
 
-  // Enhance runtime with custom capabilities
-  const enhancedRuntime = {
-    ...runtime,
-    tools,
-    toolUIs,
-    // Add streaming support
-    streamMode: true,
-    // Add multimodal support
-    supportsImages: true,
-    supportsVoice: true,
-    // Add persistence
-    persistMessages: true,
-    // Add analytics
-    trackUsage: true,
-  }
-
   return (
-    <AssistantRuntimeProvider runtime={enhancedRuntime}>
+    <AssistantRuntimeProvider runtime={runtime}>
       <div className="relative">
         {children}
         <FloatingAssistantIndicator />

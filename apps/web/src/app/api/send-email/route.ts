@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { sendgrid } from '@/lib/email/sendgrid'
+import { gmail } from '@/lib/email/gmail'
 import { z } from 'zod'
 
 const SendEmailSchema = z.object({
@@ -23,8 +23,8 @@ export async function POST(req: NextRequest) {
       validated.text = validated.content
     }
     
-    // Use SendGrid to send the email
-    const result = await sendgrid.sendEmail(validated)
+    // Use Gmail to send the email
+    const result = await gmail.sendEmail(validated)
     
     if (result.success) {
       // Save to sent folder (in production, this would save to database)

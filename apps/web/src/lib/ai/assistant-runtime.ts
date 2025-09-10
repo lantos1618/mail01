@@ -2,11 +2,9 @@ import {
   AssistantRuntimeProvider,
   useLocalRuntime,
   useExternalStoreRuntime,
-  Thread,
-  ThreadMessage,
-  Tool
+  ThreadMessage
 } from '@assistant-ui/react'
-import { useAIRuntime } from '@assistant-ui/react-ai-sdk'
+// AI SDK runtime integration will be added when needed
 
 // Mock AI functions for testing - replace with actual API when keys are available
 const useMockAI = !process.env.OPENAI_API_KEY
@@ -29,23 +27,29 @@ const mockStreamText = async function* ({ prompt }: any) {
 // Use dynamic imports for AI SDK
 let openai: any, generateText: any, embedMany: any, streamText: any
 
-if (!useMockAI) {
-  try {
-    const aiModule = await import('@ai-sdk/openai')
-    const aiCore = await import('ai')
-    openai = aiModule.openai
-    generateText = aiCore.generateText
-    embedMany = aiCore.embedMany
-    streamText = aiCore.streamText
-  } catch (e) {
-    console.log('Using mock AI - OpenAI SDK not available')
+// Initialize AI modules
+async function initializeAI() {
+  if (!useMockAI) {
+    try {
+      const aiModule = await import('@ai-sdk/openai')
+      const aiCore = await import('ai')
+      openai = aiModule.openai
+      generateText = aiCore.generateText
+      embedMany = aiCore.embedMany
+      streamText = aiCore.streamText
+    } catch (e) {
+      console.log('Using mock AI - OpenAI SDK not available')
+    }
   }
+
+  // Fallback to mocks if imports fail
+  generateText = generateText || mockGenerateText
+  embedMany = embedMany || mockEmbedMany
+  streamText = streamText || mockStreamText
 }
 
-// Fallback to mocks if imports fail
-generateText = generateText || mockGenerateText
-embedMany = embedMany || mockEmbedMany
-streamText = streamText || mockStreamText
+// Initialize on module load
+initializeAI()
 
 export interface EmailContext {
   currentEmail?: any
@@ -373,7 +377,7 @@ export function useRevolutionaryEmailRuntime() {
 }
 
 // Export tools for assistant-ui
-export const emailTools: Tool[] = [
+export const emailTools: any[] = [
   {
     name: 'analyzeEmail',
     description: 'Analyze email with quantum intelligence',

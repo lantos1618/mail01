@@ -204,7 +204,7 @@ function ConversationalEmail() {
             Schedule
           </Button>
         </div>
-        <Composer placeholder="Ask me anything about your emails or tell me what to do..." />
+        <Composer />
       </div>
     </div>
   )

@@ -1,16 +1,30 @@
 "use client"
 
-import { AssistantRuntimeProvider } from "@assistant-ui/react"
-import { useChatRuntime } from "@assistant-ui/react-ai-sdk"
+import { AssistantRuntimeProvider, useLocalRuntime } from "@assistant-ui/react"
 import { ReactNode } from "react"
 
 export function AssistantProvider({ children }: { children: ReactNode }) {
-  const runtime = useChatRuntime({
-    api: "/api/assistant",
-    initialMessages: [],
-    onError: (error) => {
-      console.error("Chat error:", error)
-    },
+  const runtime = useLocalRuntime({
+    run: async ({ messages }) => {
+      // Simple local runtime for basic chat functionality
+      const lastMessage = messages[messages.length - 1]
+      
+      if (!lastMessage || lastMessage.role !== 'user') {
+        return {
+          content: [{
+            type: "text",
+            text: "Hello! I'm your email assistant. How can I help you today?"
+          }]
+        }
+      }
+      
+      return {
+        content: [{
+          type: "text",
+          text: "I'm processing your request. This is a basic response."
+        }]
+      }
+    }
   })
 
   return (

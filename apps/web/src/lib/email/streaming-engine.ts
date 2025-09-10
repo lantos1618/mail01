@@ -253,7 +253,7 @@ export class EmailStreamingEngine extends EventEmitter {
     // Simulate action item extraction
     await new Promise(resolve => setTimeout(resolve, 200))
     
-    const items = []
+    const items: any[] = []
     const keywords = ['todo', 'action', 'need to', 'please', 'will you', 'can you']
     
     thread.emails?.forEach((email: any) => {

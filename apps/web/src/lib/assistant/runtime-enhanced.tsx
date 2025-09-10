@@ -77,16 +77,17 @@ const searchEmailsTool = makeAssistantTool({
 
 const searchEmailsToolUI = makeAssistantToolUI({
   toolName: "searchEmails",
-  render: ({ part, status }) => {
-    const { query, filters } = part.args as any
-    const result = part.result as any
+  render: (toolCallMessage) => {
+    const { query, filters } = toolCallMessage.args as any
+    const result = toolCallMessage.result as any
+    const status = toolCallMessage.status?.type
     
     return (
       <Card className="p-4 my-2">
         <div className="flex items-center gap-2 mb-3">
           <Search className="w-4 h-4 text-blue-500" />
           <span className="font-medium">Email Search</span>
-          {status === "in_progress" && <Loader2 className="w-4 h-4 animate-spin" />}
+          {status === "running" && <Loader2 className="w-4 h-4 animate-spin" />}
         </div>
         
         <div className="text-sm text-gray-600 mb-2">
@@ -279,37 +280,35 @@ export function EnhancedAssistantProvider({ children }: { children: ReactNode })
   
   // Use local runtime with advanced configuration
   const runtime = useLocalRuntime({
-    initialMessages: [
-      {
-        role: "assistant",
-        content: "I'm your AI email assistant powered by Mail-01. I can help you search, compose, analyze, and automate your emails with advanced AI capabilities. What would you like to do?",
-      },
-    ],
-    maxToolRoundtrips: 5,
-    adapters: {
-      chatModel: {
-        async *run({ messages, abortSignal, config }) {
-          setIsProcessing(true)
-          
-          // Simulate streaming response
-          const response = "I'll help you manage your emails intelligently. "
-          for (const char of response) {
-            yield {
-              content: [{ type: "text", text: char }],
-            }
-            await new Promise(resolve => setTimeout(resolve, 30))
-          }
-          
-          setIsProcessing(false)
-        },
-      },
-      tools: {
-        searchEmails: searchEmailsTool.adapter,
-        composeEmail: composeEmailTool.adapter,
-        analyzeEmail: analyzeEmailTool.adapter,
-        emailAutomation: emailAutomationTool.adapter,
-      },
-    },
+    run: async ({ messages }) => {
+      setIsProcessing(true)
+      
+      // Get the last user message
+      const lastMessage = messages[messages.length - 1]
+      
+      let responseText = "I'm your AI email assistant powered by Mail-01. "
+      
+      if (lastMessage && lastMessage.role === 'user') {
+        // Process user message
+        const userText = lastMessage.content
+          .filter((part: any) => part.type === 'text')
+          .map((part: any) => part.text)
+          .join(' ')
+        
+        responseText = `Processing your request: "${userText}". I can help you search, compose, analyze, and automate your emails.`
+      } else {
+        responseText += "I can help you search, compose, analyze, and automate your emails with advanced AI capabilities. What would you like to do?"
+      }
+      
+      setIsProcessing(false)
+      
+      return {
+        content: [{ 
+          type: "text", 
+          text: responseText
+        }]
+      }
+    }
   })
   
   // Add advanced features

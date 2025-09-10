@@ -21,6 +21,8 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "^2.0.14"
+    "@ai-sdk/anthropic": "^2.0.14",
+    "googleapis": "^159.0.0",
+    "nodemailer": "^7.0.6"
   }
 }

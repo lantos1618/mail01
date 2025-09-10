@@ -324,7 +324,7 @@ ${email.content}
 
   // Get agent insights
   async getInsights() {
-    const insights = {
+    const insights: any = {
       totalProcessed: this.processedEmails.size,
       pendingApprovals: this.pendingApprovals.size,
       learnedPatterns: {},
