@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { gmail } from '@/lib/email/gmail'
+import { sendEmail } from '@/lib/services/email-universal'
 import { z } from 'zod'
 
 const SendEmailSchema = z.object({
@@ -23,35 +23,29 @@ export async function POST(req: NextRequest) {
       validated.text = validated.content
     }
     
-    // Use Gmail to send the email
-    const result = await gmail.sendEmail(validated)
-    
-    if (result.success) {
-      // Save to sent folder (in production, this would save to database)
-      const sentEmail = {
-        ...validated,
-        messageId: result.messageId,
-        timestamp: new Date().toISOString(),
-        folder: 'sent',
-      }
-      
-      // For now, just log it
-      console.log('Email sent successfully:', sentEmail)
-      
-      return NextResponse.json({
-        success: true,
-        messageId: result.messageId,
-        message: 'Email sent successfully',
-      })
-    } else {
-      return NextResponse.json(
-        {
-          success: false,
-          error: result.error || 'Failed to send email',
-        },
-        { status: 400 }
-      )
+    // Ensure text is always provided
+    if (!validated.text) {
+      validated.text = validated.html || ''
     }
+    
+    // Use universal email service to send the email
+    const result = await sendEmail({
+      to: validated.to,
+      from: validated.from,
+      subject: validated.subject,
+      text: validated.text,
+      html: validated.html,
+      cc: validated.cc?.join(', '),
+      bcc: validated.bcc?.join(', ')
+    })
+    
+    return NextResponse.json({
+      success: true,
+      messageId: result.messageId,
+      provider: result.provider,
+      message: `Email sent successfully via ${result.provider}`,
+      savedEmail: result.savedEmail
+    })
   } catch (error) {
     console.error('Send email error:', error)
     

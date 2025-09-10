@@ -9,24 +9,60 @@ AI-powered email client built with assistant-ui - a next-generation email experi
 - **Email Organization**: Intelligent categorization and filtering
 - **Thread Summarization**: Quick summaries of long email threads
 - **Modern UI**: Clean, responsive interface built with Next.js and Tailwind CSS
-- **Multi-Account Support**: Manage multiple email accounts in one place
+- **Multi-Provider Support**: SendGrid, Gmail (OAuth2 & App Password), Local fallback
 
 ## Tech Stack
 
 - **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS
 - **AI**: assistant-ui, Vercel AI SDK, OpenAI
-- **Backend**: Hono, SQLite, Drizzle ORM
-- **Email**: SendGrid API
+- **Email Providers**: SendGrid, Gmail, Local Storage
 - **Build**: Turbo, pnpm
 
 ## Getting Started
 
-### Prerequisites
+### Quick Start (No Configuration Required!)
 
-- Node.js 18+
-- pnpm
-- SendGrid API key (optional, for sending emails)
-- OpenAI API key (for AI features)
+```bash
+# Clone and install
+git clone https://github.com/lantos1618/mail01.git
+cd mail01
+pnpm install
+
+# Run immediately - emails save locally
+pnpm dev
+
+# Open http://localhost:3000
+```
+
+### Email Provider Setup (Choose One)
+
+#### Option 1: SendGrid (Recommended for Production)
+```bash
+# Get API key from sendgrid.com
+export SENDGRID_API_KEY=your-api-key
+
+# Restart the app
+pnpm dev
+```
+
+#### Option 2: Gmail OAuth2 (Most Secure)
+1. Visit http://localhost:3000/setup
+2. Click "Set Up Gmail OAuth2"
+3. Authorize Mail-01
+4. Done - tokens saved automatically
+
+#### Option 3: Gmail App Password (Quick Setup)
+```bash
+# Enable 2FA on Google account, then generate app password
+export GMAIL_USER=your-email@gmail.com
+export GMAIL_APP_PASSWORD=16-character-password
+
+# Restart the app
+pnpm dev
+```
+
+#### Option 4: Local Development (Default)
+No setup needed! Emails automatically save to `agent/inbox/sent/`
 
 ### Installation
 
@@ -38,9 +74,8 @@ cd mail01
 # Install dependencies
 pnpm install
 
-# Set up environment variables
-cp .env.example .env
-# Edit .env with your API keys
+# Optional: Set up environment variables for email providers
+# The app works without any configuration!
 ```
 
 ### Development

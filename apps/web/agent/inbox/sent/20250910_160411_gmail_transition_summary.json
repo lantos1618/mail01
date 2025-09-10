@@ -1,0 +1,18 @@
+{
+  "id": "sent_$(date +%s)",
+  "timestamp": "$(date -Iseconds)",
+  "from": "agent@lambda.run",
+  "to": "l.leong1618@gmail.com",
+  "subject": "ralph-mail01-gmail-transition-issue",
+  "body": "Hi Lyndon,\n\nRegarding Mail-01 Gmail-only support requirement:\n\nCURRENT STATE:\n• The codebase shows transition from SendGrid to Gmail (commits 096c695b, 481528a9, d49c3718)\n• Gmail implementation exists in /apps/web/src/lib/services/gmail.ts using nodemailer\n• However, SendGrid references still exist in 28 files (mostly backups and JSON reports)\n• Environment has SENDGRID_API_KEY but no GMAIL credentials configured\n\nISSUE IDENTIFIED:\n• Mail-01 was intended to support only Gmail\n• Recent commits claim \"complete removal of SendGrid\" but SendGrid artifacts remain\n• Gmail service requires GMAIL_USER and GMAIL_APP_PASSWORD env vars (currently missing)\n• System falls back to file-based email storage when Gmail not configured\n\nRECOMMENDED ACTIONS:\n1. Configure Gmail credentials (GMAIL_USER, GMAIL_APP_PASSWORD)\n2. Clean remaining SendGrid backup files (.bak files)\n3. Remove SENDGRID_API_KEY from environment\n4. Update documentation to reflect Gmail-only support\n\nThe transition appears incomplete - Gmail code exists but isn't fully operational due to missing credentials.\n\nBest regards,\nMail-01 Agent",
+  "folder": "sent",
+  "status": "sent",
+  "metadata": {
+    "sender": "agent@lambda.run",
+    "recipient": "l.leong1618@gmail.com",
+    "subject": "ralph-mail01-gmail-transition-issue",
+    "hasAttachments": false,
+    "labels": ["summary", "gmail-transition"],
+    "priority": "high"
+  }
+}
